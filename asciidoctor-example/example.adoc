@@ -1,24 +1,23 @@
-Asciidoctor WaveDrom Python Command Line Demo
-================
+= AsciiDoctor demo for HDL designers =
+v1.0
 :toc: left
 :icons: font
 :numbered:
 :source-autofit:
 :doctype: book
 :description: An AsciiDoctor demo with wavedrom python command line
-:imagesdir: images
 :source-highlighter: pygments
-:wavedrom: ../wavedrom-master/src/wavedrom.py
+:wavedrom: ../src/wavedrom.py
 
-== Wavedrom diagrams examples
+== WaveDrom diagrams examples ==
 
-= Test #0
+=== Test #0 ===
 [wavedrom,wavedrom_test0,svg]
 ----
 { "signal": [{ "name": "Alfa", "wave": "01.zx=ud.23.45" }] }
 ----
 
-= Test #1
+=== Test #1 ===
 [wavedrom,wavedrom_test1,svg]
 ----
 { "signal": [
@@ -35,7 +34,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 ]}
 ----
 
-= Test #2
+=== Test #2 ===
 [wavedrom,wavedrom_test2,svg]
 ----
 { "signal": [
@@ -45,7 +44,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 ]}
 ----
 
-= Test #3
+=== Test #3 ===
 [wavedrom,wavedrom_test3,svg]
 ----
 { "signal": [
@@ -57,7 +56,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 ]}
 ----
 
-= Test #4
+=== Test #4 ===
 [wavedrom,wavedrom_test4,svg]
 ----
 { "signal": [
@@ -80,7 +79,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 ]}
 ----
 
-= Test #5
+=== Test #5 ===
 [wavedrom,wavedrom_test5,svg]
 ----
 { "signal": [
@@ -92,7 +91,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 ]}
 ----
 
-= Test #6
+=== Test #6 ===
 [wavedrom,wavedrom_test6,svg]
 ----
 { "signal": [
@@ -104,7 +103,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-= Test #7
+=== Test #7 ===
 [wavedrom,wavedrom_test7,svg]
 ----
 { "signal" : [
@@ -116,7 +115,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-= Test #8
+=== Test #8 ===
 [wavedrom,wavedrom_test8,svg]
 ----
 { "signal" : [
@@ -128,7 +127,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-= Test #9
+=== Test #9 ===
 [wavedrom,wavedrom_test9,svg]
 ----
 {"signal": [
@@ -147,7 +146,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-= Test #10
+=== Test #10 ===
 [wavedrom,wavedrom_test10,svg]
 ----
 {"signal": [
@@ -181,7 +180,7 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-= Test #11
+=== Test #11 ===
 [wavedrom,wavedrom_test11,svg]
 ----
 { "signal": [
@@ -198,34 +197,42 @@ Asciidoctor WaveDrom Python Command Line Demo
 }
 ----
 
-== Port description example
+== Port description example ==
 
-[width="100%",cols="^2,^1,^7",options="header"]
+[width="100%",cols="<2,^1,^7",options="header"]
 |=================================
-|Signal name    |type  | Description
+|Signal name    |Type  | Description
 |clk            | in  <| Clk input
 |reset          | in  <| Reset
-|avmm_address   | in  <| Address bus
-|avmm_read      | in  <| Read signal
-|avmm_readdata  | out <| Read data
-|avmm_readvalid | out <| Read valid signal
-|avmm_write     | in  <| Write signal
-|avmm_writedata | in  <| Write data
+|address        | in  <| Address bus
+|read           | in  <| Read signal
+|readdata       | out <| Read data bus
+|readvalid      | out <| Read valid signal
+|write          | in  <| Write signal
+|writedata      | in  <| Write data bus
 |=================================
 
-== Register description example
+== Register description example ==
 
-[width="100%",cols="^2,^1,^1,^6",options="header"]
+[width="100%",cols="^2,^1,^1,^1,^5",options="header"]
 |=========================================================
-|Adresse       |Bits  |Accès |Description
-.4+|0x00000014
-|31:24 |RO <| 0x00000000. Not used.
-|23:16 |RO <| Version major.
-|15:8  |RO <| Version minor.
-|7:0   |RO <| Version patch.
+|Address       |Bits  | Field Name    |Access |Description
+.4+|0x00000000
+               |31:24 | NU            |RO    <| Not used.
+               |23:16 | VMAJ          |RO    <| Version major.
+               |15:8  | VMIN          |RO    <| Version minor.
+               |7:0   | VPATCH        |RO    <| Version patch.
+.7+|0x00000004
+               |31:16 | STATUS        | RO   <| Status bits.
+               |15    | PLL_LOCKED    | RO   <| PLL locked.
+               |14    | DDR_INIT_DONE | RO   <| DDR Init_done.
+               |13:12 | NU            | RO   <| Not used.
+               |11:8  | GROUP_0_INTR  | R/W  <| Group #0 interrupt requests. 
+               |7:4   | GROUP_1_INTR  | R/W  <| Group #1 interrupt requests.
+               |3:0   | GROUP_2_INTR  | R/W  <| Group #2 interrupt requests.
 |=========================================================
 
-== VHDL syntax coloring example
+== VHDL syntax coloring example ==
 [source,vhdl]
 ----
 proc_column_counter : process ( reset, clk )
