@@ -214,7 +214,7 @@ v1.0
 
 == Register description example ==
 
-[width="100%",cols="^2,^1,^1,^1,^5",options="header"]
+[width="100%",cols="^2,^1,^2,^1,^4",options="header"]
 |=========================================================
 |Address       |Bits  | Field Name    |Access |Description
 .4+|0x00000000
