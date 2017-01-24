@@ -20,7 +20,8 @@ _WaveDrom.py_ command line uses Python's JSON interpreter that is more restricti
  * All strings have to be written between quotes (""),
  * Extra commas (,) not supported at end of lists or dictionaries,
  * ONLY SVG output format supported so far,
- * _WaveDrom.py_ doesn't support the schematic drawing feature.
+ * _WaveDrom.py_ doesn't support the schematic drawing feature yet,
+ * _WaveDrom.py_ was tested under Python V2.7.12 and PythonV3.4.5
 
 ## AsciiDoctor example
 An _AsciiDoctor_ example is provided for those who directly want to generate their timing diagrams from _AsciiDoctor_ formatted documents.

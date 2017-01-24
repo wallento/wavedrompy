@@ -29,7 +29,7 @@ import sys
 import json
 import math
 
-font_width1 = 10
+font_width1 = 7
 font_width2 = 7
 
 lane = {
@@ -604,7 +604,7 @@ def parseWaveLanes (sig) :
     def data_extract (e) :
         tmp = e.get('data')
         if tmp == None : return None 
-        if type (tmp) is str or type(tmp) is unicode: tmp=tmp.split()
+        if is_type_str (tmp) : tmp=tmp.split()
         return tmp
 
     content = []
@@ -746,7 +746,7 @@ def renderMarks (root, content, index) :
             return
 
         val = cxt[ref1][ref2]
-        if type( val ) is str or type( val ) is unicode :
+        if is_type_str( val ) :
             val = val.split()
         elif type( val ) is int :
             offset = val
@@ -759,7 +759,7 @@ def renderMarks (root, content, index) :
                 return
             elif len( val ) == 1 :
                 offset = val[0]
-                if type(offset) is str or type(offset) is unicode:
+                if is_type_str(offset) :
                     L = val
                 else :
                     for i in range ( length ) :
@@ -772,7 +772,7 @@ def renderMarks (root, content, index) :
                 if len( tmp ) == 2 :
                     dp = len( tmp[1] )
                 
-                if ( type(offset) is str or type( offset ) is unicode ) or ( type(step) is str or type(step) is unicode ) :
+                if is_type_str(offset) or is_type_str(step) :
                     L = val
                 else :
                     offset = step * offset
@@ -801,7 +801,7 @@ def renderMarks (root, content, index) :
 
     mstep  = 2 * int(lane['hscale'])
     mmstep = mstep * lane['xs']
-    marks  = int(lane['xmax']) / mstep
+    marks  = int( lane['xmax'] / mstep )
     gy     = len( content ) * int(lane['yo'])
 
     g = ['g', {'id': 'gmarks_' + str(index)}]
@@ -949,7 +949,7 @@ def renderArcs (root, source, index, top) :
          
         for k in Events: 
             if k.islower() :
-                if Events[k]['x'] > 0 :
+                if int( Events[k]['x'] ) > 0 :
                     lwidth = len( k ) * font_width2
                     underlabel = [
                         'rect',
@@ -1005,16 +1005,8 @@ def parseConfig (source) :
 
 def rec (tmp, state) :
 
-    name = ''
-    delta_x = 10
-
-    if type( tmp[0] ) is str or type( tmp[0] ) is unicode :
-        name = tmp[0]
-        delta_x = 25
-     
-    if type( tmp[0] ) is int :
-        name = str( tmp[0] )
-        delta_x = 25
+    name = str( tmp[0] )
+    delta_x = 25
     
     state['x'] += delta_x
     for i in range( len( tmp ) ) :
@@ -1074,12 +1066,12 @@ def renderWaveForm (index, source, output) :
         content  = parseWaveLanes(ret['lanes'])
         glengths = renderWaveLane(root, content, index)
         for i in range( len( glengths ) ):
-            xmax = max(xmax, ( glengths[i] + ret['width'][i] ))
+            xmax = max( xmax, ( glengths[i] + ret['width'][i] ) )
         renderMarks(root, content, index)
         renderArcs(root, ret['lanes'], index, source)
         renderGaps(root, ret['lanes'], index)
         renderGroups(groups, ret['groups'], index)
-        lane['xg'] = int( math.ceil( ( xmax - lane['tgo']) / lane['xs'] ) * lane['xs'] )        
+        lane['xg'] = int( math.ceil( float( xmax - lane['tgo'] ) / float(lane['xs'] ) ) ) * lane['xs']
         width  = (lane['xg'] + lane['xs'] * (lane['xmax'] + 1) )
         height = len(content) * lane['yo'] + lane['yh0'] + lane['yh1'] + lane['yf0'] + lane['yf1']
         output[1]={
@@ -1178,6 +1170,12 @@ def renderGaps (root, source, index) :
 
         root.append( gg )
 
+def is_type_str( var ) :
+    if sys.version_info[0] < 3:
+        return type( var ) is str or type( var ) is unicode
+    else:
+        return type( var ) is str
+
 def convert_to_svg( root ) :
 
     svg_output = ''
@@ -1212,19 +1210,22 @@ def convert_to_svg( root ) :
 if __name__ == '__main__':
 
     if len( sys.argv ) != 5:
-        print 'Usage : ' + sys.argv[0] + ' source <input.json> svg <output.svg>' 
+        print ( 'Usage : ' + sys.argv[0] + ' source <input.json> svg <output.svg>' )
         exit(1)
         
     if sys.argv[3] != 'svg' :
-        print 'Error: only svg format supported.'
+        print ( 'Error: only svg format supported.' )
         exit(1)
     
     output=[]
     inputfile  = sys.argv[2]
     outputfile = sys.argv[4]
+    
     with open(inputfile,'r') as f:
        jinput = json.load(f)
+       
     renderWaveForm(0,jinput,output)
     svg_output = convert_to_svg(output)
+    
     with open(outputfile,'w') as f:
        f.write( svg_output )
