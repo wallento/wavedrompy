@@ -674,7 +674,7 @@ def renderWaveLane (root, content, index) :
             glengths.append( len(name) * font_width1 + font_width1 )
             
             xoffset = content[j][0][1]
-            xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else  -2 * xoffset
+            xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else -2 * xoffset
             gg = [
                 'g',
                 {
@@ -898,7 +898,7 @@ def renderArcs (root, source, index, top) :
                     '<-|>' : {'style': 'marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none','d': 'm ' + frm['x'] + ',' + frm['y'] + ' ' + str(dx) + ',0 0,' + str(dy)},
                     '<-|->': {'style': 'marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none','d': 'm ' + frm['x'] + ',' + frm['y'] + ' ' + str(dx / 2) + ',0 0,' + str(dy) + ' ' + str(dx / 2) + ',0'}
                 }
-                gmark[1].update( pattern.get( Edge['shape'], { 'style': 'fill:none;stroke:#F00;stroke-width:1' } ) )
+                gmark[1].update( pattern.get( Edge['shape'], { 'style': 'fill:none;stroke:#00F;stroke-width:1' } ) )
                 
                 if Edge['label']:
                     if Edge['shape'] == '-~' :

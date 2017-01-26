@@ -197,6 +197,22 @@ v1.0
 }
 ----
 
+=== Test #12 ===
+[wavedrom,wavedrom_test12,svg]
+----
+{ "signal": [
+  { "name": "A", "wave": "01..0..",  "node": ".a..e.." },
+  { "name": "B", "wave": "0.1..0.",  "node": "..b..d.", "phase":0.5 },
+  { "name": "C", "wave": "0..1..0",  "node": "...c..f" },
+  {                                  "node": "...g..h" }
+  ],
+  "edge": [
+    "b-|a t1", "a-|c t2", "b-|-c t3", "c-|->e t4", "e-|>f more text",
+    "e|->d t6", "c-g", "f-h", "g<->h 3 ms"
+  ]
+}
+----
+
 == Port description example ==
 
 [width="100%",cols="<2,^1,^7",options="header"]
