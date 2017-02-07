@@ -29,8 +29,7 @@ import sys
 import json
 import math
 
-font_width1 = 7
-font_width2 = 7
+font_width = 7
 
 lane = {
     "xs"     : 20,    # tmpgraphlane0.width
@@ -671,7 +670,7 @@ def renderWaveLane (root, content, index) :
             ]
             g.append(title)
 
-            glengths.append( len(name) * font_width1 + font_width1 )
+            glengths.append( len(name) * font_width + font_width )
             
             xoffset = content[j][0][1]
             xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else -2 * xoffset
@@ -922,7 +921,7 @@ def renderArcs (root, source, index, top) :
                     if Edge['shape'] =='<-|>' : 
                          lx = float(to['x'])
 
-                    lwidth = len( Edge['label'] ) * font_width2
+                    lwidth = len( Edge['label'] ) * font_width
                     label = [
                         'text',
                         {
@@ -950,7 +949,7 @@ def renderArcs (root, source, index, top) :
         for k in Events: 
             if k.islower() :
                 if int( Events[k]['x'] ) > 0 :
-                    lwidth = len( k ) * font_width2
+                    lwidth = len( k ) * font_width
                     underlabel = [
                         'rect',
                         {
