@@ -7,7 +7,6 @@ v1.0
 :doctype: book
 :description: An AsciiDoctor demo with wavedrom python command line
 :source-highlighter: pygments
-:wavedrom: ../src/wavedrom.py
 
 == WaveDrom diagrams examples ==
 

@@ -1,0 +1,1 @@
+python $( dirname $0 )/src/WaveDrom.py $1 $2 $3 $4
