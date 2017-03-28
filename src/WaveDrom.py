@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 # The MIT License (MIT)
 # 
 # Copyright (c) 2011-2016 Aliaksei Chapyzhenka
