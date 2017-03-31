@@ -10,7 +10,7 @@ _wavedrom.py_ directly converts _WaveDrom_ compatible JSON files into SVG format
 The command line is argument-compatible with original WaveDrom command line:
 
 ```
-  _WaveDromEditor_ source < input.json > svg < output.svg >
+  WaveDromEditor source < input.json > svg < output.svg >
 ```
 
 ## Important notice
