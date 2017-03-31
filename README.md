@@ -3,7 +3,7 @@ WaveDrom compatible python command line.
 
 This tool is intended for people who don't want to install the _Node.js_ environment just to use WaveDrom as simple command line.
 
-This tool is a direct translation of original Javascript file _WaveDrom.js_ to Python. No extra features added.
+This tool is a direct translation of original Javascript file _WaveDrom.js_ to Python. No extra feature added.
 
 _WaveDrom.py_ directly converts _WaveDrom_ compatible JSON files into SVG format.
 
@@ -30,7 +30,7 @@ Modify your PATH variable to add the _wavedrompy_ install directory.
 
 If you have trouble running some scripts, try a dos2linux command on them.
 
-If necessary, do a _chmod a+x_ for files _WaveDromEditor_ and _WaveDromEditor.exe_
+If necessary, apply a _chmod a+x_ on _WaveDromEditor_ and _WaveDromEditor.exe_ files.
 
 ## AsciiDoctor example
 An _AsciiDoctor_ example is provided to directly generate timing diagrams from _AsciiDoctor_ formatted documents.
