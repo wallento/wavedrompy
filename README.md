@@ -2,7 +2,7 @@
 WaveDrom compatible python command line.
 
 This tool is intended for people who don't want to install the _Node.js_ environment just to use WaveDrom as simple command line.
-This tool is a direct translation of Javascript file _WaveDrom.js_ to Python. No extra features added.
+This tool is a direct translation of original Javascript file _WaveDrom.js_ to Python. No extra features added.
 
 _wavedrom.py_ directly converts _WaveDrom_ compatible JSON files into SVG format.
 
