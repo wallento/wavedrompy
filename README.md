@@ -26,6 +26,7 @@ The command line uses Python's JSON interpreter that is more restrictive than th
 ## Installation
 
 Modify your PATH variable to add the _wavedrompy_ install directory.
+If you have trouble running some scripts, try a dos2linux command on them.
 
 ## AsciiDoctor example
 An _AsciiDoctor_ example is provided to directly generate timing diagrams from _AsciiDoctor_ formatted documents.
