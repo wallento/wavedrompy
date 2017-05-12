@@ -1,4 +1,4 @@
-# WaveDrompy
+# WaveDromPy
 WaveDrom compatible python command line.
 
 This tool is intended for people who don't want to install the _Node.js_ environment just to use WaveDrom as simple command line.
@@ -28,9 +28,9 @@ The command line uses Python's JSON interpreter that is more restrictive than th
 
 Modify your PATH variable to add the _wavedrompy_ install directory.
 
-If you have trouble running some scripts, try a dos2linux command on them.
+If you have trouble running some scripts, try a _'dos2linux'_ command on them.
 
-If necessary, apply a _chmod a+x_ on _WaveDromEditor_ and _WaveDromEditor.exe_ files.
+If necessary, apply a _'chmod a+x'_ on _WaveDromEditor_ and _WaveDromEditor.exe_ files.
 
 ## AsciiDoctor example
 An _AsciiDoctor_ example is provided to directly generate timing diagrams from _AsciiDoctor_ formatted documents.
