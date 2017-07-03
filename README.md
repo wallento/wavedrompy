@@ -22,7 +22,7 @@ The command line uses Python's JSON interpreter that is more restrictive than th
  * Extra comma (,) not supported at end of lists or dictionaries,
  * Only SVG output format supported so far,
  * _WaveDromPy_ doesn't support the schematic drawing feature yet,
- * _WaveDromPy_ was tested with Python V2.7.12 and Python V3.4.5 under Cygwin and Ubuntu
+ * _WaveDromPy_ was tested with Python V2.7.12 and Python V3.4.5 under both Cygwin and Ubuntu.
 
 ## Installation
 

@@ -16,7 +16,7 @@ v1.0
 { "signal": [{ "name": "Alfa", "wave": "01.zx=ud.23.45" }] }
 ----
 
-=== Test #1 ===
+=== Test #1 (default) ===
 [wavedrom,wavedrom_test1,svg]
 ----
 { "signal": [
@@ -31,6 +31,25 @@ v1.0
   { "name": "clk3", "wave": "nhNhplPl" },
   { "name": "clk4", "wave": "xlh.L.Hx" }
 ]}
+----
+
+=== Test #1 (narrow) ===
+[wavedrom,wavedrom_test1n,svg]
+----
+{ "signal": [
+  { "name": "pclk", "wave": "p......." },
+  { "name": "Pclk", "wave": "P......." },
+  { "name": "nclk", "wave": "n......." },
+  { "name": "Nclk", "wave": "N......." },
+  {},
+  { "name": "clk0", "wave": "phnlPHNL" },
+  { "name": "clk1", "wave": "xhlhLHl." },
+  { "name": "clk2", "wave": "hpHplnLn" },
+  { "name": "clk3", "wave": "nhNhplPl" },
+  { "name": "clk4", "wave": "xlh.L.Hx" }
+  ],
+   "config": { "skin": "narrow" }
+}
 ----
 
 === Test #2 ===
