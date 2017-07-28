@@ -2,6 +2,8 @@
 
 for file in $( ls *.json )
 do
-    echo $file
+    echo "Processing $file"
     ../src/wavedrom.py source $file svg ${file%.json}.svg
 done
+
+echo "Test complete"
