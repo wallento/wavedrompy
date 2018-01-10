@@ -19,7 +19,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 setup(
     # This is the name of your project. The first time you publish this
     # package, this name will be registered for you. It will determine how
@@ -112,7 +112,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    # packages=find_packages(exclude=["contrib", "docs", "tests"]),  # Required
+    packages=find_packages(exclude=["contrib", "docs", "tests"]),  # Required
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
@@ -160,7 +160,7 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
         "console_scripts": [
-            "wavedrompy=wavedrompy.wavedrompy:main",
+            "wavedrompy=wavedrompy.wavedrom:main",
         ],
     },
 )
