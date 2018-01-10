@@ -29,6 +29,7 @@ import sys
 import json
 import math
 import waveskin
+import argparse
 
 font_width = 7
 
@@ -835,18 +836,16 @@ def convert_to_svg(root):
 
 
 if __name__ == "__main__":
-
-    if len(sys.argv) != 5:
-        print ("Usage : " + sys.argv[0] + " source <input.json> svg <output.svg>")
-        exit(1)
-
-    if sys.argv[3] != "svg":
-        print ("Error: only SVG format supported.")
-        exit(1)
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--input", "-i", default="wave.json", help="<input wavedrom source filename>")
+    parser.add_argument("--png", "-p", default="output.png", help="<output PNG image file name>")
+    parser.add_argument("--pdf", "-P", default="output.pdf", help="<output PDF file name>")
+    parser.add_argument("--svg", "-s", default="output.svg", help="<output SVG image file name>")
+    args = parser.parse_args()
 
     output = []
-    inputfile = sys.argv[2]
-    outputfile = sys.argv[4]
+    inputfile = args.input
+    outputfile = args.svg
 
     with open(inputfile, "r") as f:
         jinput = json.load(f)
