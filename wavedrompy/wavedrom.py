@@ -837,21 +837,24 @@ def convert_to_svg(root):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument("--input", "-i", default="wave.json", help="<input wavedrom source filename>")
-    parser.add_argument("--png", "-p", default="output.png", help="<output PNG image file name>")
-    parser.add_argument("--pdf", "-P", default="output.pdf", help="<output PDF file name>")
-    parser.add_argument("--svg", "-s", default="output.svg", help="<output SVG image file name>")
+    parser.add_argument("--input", "-i", help="<input wavedrom source filename>")
+    # parser.add_argument("--png", "-p", help="<output PNG image file name>")
+    # parser.add_argument("--pdf", "-P", help="<output PDF file name>")
+    parser.add_argument("--svg", "-s", help="<output SVG image file name>")
     args = parser.parse_args()
 
     output = []
     inputfile = args.input
     outputfile = args.svg
 
-    with open(inputfile, "r") as f:
-        jinput = json.load(f)
+    if not inputfile or not outputfile:
+        parser.print_help()
+    else:
+        with open(inputfile, "r") as f:
+            jinput = json.load(f)
 
-    renderWaveForm(0, jinput, output)
-    svg_output = convert_to_svg(output)
+        renderWaveForm(0, jinput, output)
+        svg_output = convert_to_svg(output)
 
-    with open(outputfile, "w") as f:
-        f.write(svg_output)
+        with open(outputfile, "w") as f:
+            f.write(svg_output)
