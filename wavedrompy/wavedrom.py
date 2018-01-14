@@ -138,7 +138,7 @@ def genWaveBrick(text, extra, times):
     x6 = {"p": "000", "n": "111", "P": "000", "N": "111"}
     xclude = {"hp": "111", "Hp": "111", "ln": "000", "Ln": "000", "nh": "111", "Nh": "111", "pl": "000", "Pl": "000"}
 
-    #atext = text.split()
+    # atext = text.split()
     atext = text
 
     tmp0 = x4.get(atext[1])
@@ -150,7 +150,7 @@ def genWaveBrick(text, extra, times):
             return genBrick(["xxx"], extra, times)
         else:
             tmp3 = y1.get(atext[0])
-            if tmp3 == None:
+            if tmp3 is None:
                 # unknown
                 return genBrick(["xxx"], extra, times)
 
@@ -159,12 +159,12 @@ def genWaveBrick(text, extra, times):
 
     else:
         tmp4 = xclude.get(text)
-        if tmp4 != None:
+        if tmp4 is not None:
             tmp1 = tmp4
 
         # sharp curves
         tmp2 = x5.get(atext[1])
-        if tmp2 == None:
+        if tmp2 is None:
             # hlHL
             return genBrick([tmp1, tmp0], extra, times)
         else:
@@ -205,7 +205,7 @@ def parseWaveLanes(sig):
 
     def data_extract(e):
         tmp = e.get("data")
-        if tmp == None:
+        if tmp is None:
             return None
         if is_type_str(tmp):
             tmp = tmp.split()
@@ -296,7 +296,7 @@ def renderWaveLane(root, content, index):
                     b = [
                         "use",
                         {
-                            #"id": "use_" + str(i) + "_" + str(j) + "_" + str(index),
+                            # "id": "use_" + str(i) + "_" + str(j) + "_" + str(index),
                             "xmlns:xlink": xlinkns,
                             "xlink:href": "#" + str(content[j][1][i]),
                             "transform": "translate(" + str(i * lane["xs"]) + ")"
@@ -349,7 +349,7 @@ def renderMarks(root, content, index):
     def ticktock(g, cxt, ref1, ref2, x, dx, y, length):
         L = []
 
-        if cxt.get(ref1) == None or cxt[ref1].get(ref2) == None:
+        if cxt.get(ref1) is None or cxt[ref1].get(ref2) is None:
             return
 
         val = cxt[ref1][ref2]
