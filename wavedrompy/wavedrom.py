@@ -28,8 +28,7 @@
 import sys
 import json
 import math
-# from .
-import waveskin
+from wavedrompy import waveskin
 import argparse
 
 
