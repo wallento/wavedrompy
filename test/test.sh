@@ -3,7 +3,7 @@
 for file in $( ls *.json )
 do
     echo "Processing $file"
-    ../src/wavedrom.py source $file svg ${file%.json}.svg
+    python3 ../wavedrompy/wavedrom.py -i $file -s ${file%.json}.svg
 done
 
 echo "Test complete"
