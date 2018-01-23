@@ -322,8 +322,8 @@ class WaveDrom(object):
                                     title = [
                                         "text",
                                         {
-                                            "x": int(labels[k]) * self.lane.xs + self.lane["xlabel"],
-                                            "y": self.lane["ym"],
+                                            "x": int(labels[k]) * self.lane.xs + self.lane.xlabel,
+                                            "y": self.lane.ym,
                                             "text-anchor": "middle",
                                             "xml:space": "preserve"
                                         },
@@ -565,13 +565,13 @@ class WaveDrom(object):
 
             for k in Events:
                 if k.islower():
-                    if int(Events[k]["x"]) > 0:
+                    if int(Events[k].x) > 0:
                         lwidth = len(k) * self.font_width
                         underlabel = [
                             "rect",
                             {
-                                "x": float(Events[k]["x"]) - float(lwidth) / 2,
-                                "y": int(Events[k]["y"]) - 4,
+                                "x": float(Events[k].x) - float(lwidth) / 2,
+                                "y": int(Events[k].y) - 4,
                                 "height": 8,
                                 "width": lwidth,
                                 "style": "fill:#FFF;"
@@ -582,8 +582,8 @@ class WaveDrom(object):
                             "text",
                             {
                                 "style": "font-size:8px;",
-                                "x": int(Events[k]["x"]),
-                                "y": int(Events[k]["y"]) + 2,
+                                "x": int(Events[k].x),
+                                "y": int(Events[k].y) + 2,
                                 "width": lwidth,
                                 "text-anchor": "middle"
                             },
@@ -690,30 +690,31 @@ class WaveDrom(object):
         if source.get("signal"):
             self.insertSVGTemplate(index, output, source)
             self.parseConfig(source)
-            ret = {"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []}
+            ret = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
             self.rec(source["signal"], ret)
-            content = self.parseWaveLanes(ret["lanes"])
+            content = self.parseWaveLanes(ret.lanes)
             glengths = self.renderWaveLane(root, content, index)
-            for i in range(len(glengths)):
-                xmax = max(xmax, (glengths[i] + ret["width"][i]))
+            for i, val in enumerate(glengths):
+                xmax = max(xmax, (val + ret.width[i]))
             self.renderMarks(root, content, index)
-            self.renderArcs(root, ret["lanes"], index, source)
-            self.renderGaps(root, ret["lanes"], index)
-            self.renderGroups(groups, ret["groups"], index)
-            self.lane.xg = int(math.ceil(float(xmax - self.lane["tgo"]) / float(self.lane.xs))) * self.lane.xs
+            self.renderArcs(root, ret.lanes, index, source)
+            self.renderGaps(root, ret.lanes, index)
+            self.renderGroups(groups, ret.groups, index)
+            self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = (self.lane.xg + self.lane.xs * (self.lane.xmax + 1))
             height = len(content) * self.lane.yo + self.lane.yh0 + self.lane.yh1 + self.lane.yf0 + self.lane.yf1
             output[1] = {
-                "id": "svgcontent_" + str(index),
+                "id": "svgcontent_{}".format(index),
                 "xmlns": "http://www.w3.org/2000/svg",
                 "xmlns:xlink": "http://www.w3.org/1999/xlink",
                 "width": str(width),
                 "height": str(height),
-                "viewBox": "0 0 " + str(width) + " " + str(height),
+                "viewBox": "0 0 {w},{h}".format(w=width, h=height),
                 "overflow": "hidden"
             }
-            output[-1][2][1]["transform"] = "translate(" + str(self.lane.xg + 0.5) + \
-                ", " + str((float(self.lane.yh0) + float(self.lane.yh1)) + 0.5) + ")"
+            dx = self.lane.xg + 0.5
+            dy = float(self.lane.yh0) + float(self.lane.yh1)
+            output[-1][2][1]["transform"] = "translate({dx},{dy})".format(dx=dx, dy=dy)
 
         output[-1][2].extend(root)
         output[-1][3].extend(groups)
