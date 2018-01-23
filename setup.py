@@ -20,6 +20,9 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Fields marked as "Optional" may be commented out.
 
 VERSION = "0.0.4"
+requires = ["svgwrite",
+            "attrdict"
+            ]
 setup(
     # This is the name of your project. The first time you publish this
     # package, this name will be registered for you. It will determine how
@@ -120,7 +123,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip"s requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    # install_requires=["peppercorn"],  # Optional
+    install_requires=requires,  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
