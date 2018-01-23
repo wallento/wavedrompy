@@ -465,82 +465,80 @@ class WaveDrom(object):
                             x = int(float(self.lane.xs) * (2 * pos * self.lane.period *
                                                            self.lane.hscale - self.lane.phase) + float(self.lane.xlabel))
                             y = int(idx * self.lane.yo + self.lane.y0 + float(self.lane.ys) * 0.5)
-                            Events.eventname = AttrDict({"x": str(x), "y": str(y)})
+                            Events[eventname] = AttrDict({"x": str(x), "y": str(y)})
                         pos += 1
 
-            gg = ["g", {"id": "wavearcs_" + str(index)}]
+            gg = ["g", {"id": "wavearcs_{index}".format(index=index)}]
             root.append(gg)
 
             if top.get("edge"):
-                for i, v in enumerate(top["edge"]):
-                    Edge.words = top["edge"][i].split()
-                    Edge.label = top["edge"][i][len(Edge.words[0]):]
+                for i, val in enumerate(top["edge"]):
+                    Edge.words = val.split()
+                    Edge.label = val[len(Edge.words[0]):]
                     Edge.label = Edge.label[1:]
                     Edge.frm = Edge.words[0][0]
                     Edge.to = Edge.words[0][-1]
                     Edge.shape = Edge.words[0][1:-1]
-                    frm = Events[Edge.frm]
-                    to = Events[Edge.to]
+                    frm = AttrDict(Events[Edge.frm])
+                    to = AttrDict(Events[Edge.to])
                     gmark = [
                         "path",
                         {
-                            # "id": "gmark_" + Edge["frm"] + "_" + Edge["to"],
-                            # "d": "M " + frm["x"] + "," + frm["y"] + " " + to["x"] + "," + to["y"],
-                            "id": "gmark_{frm}_{to}".format(Edge.frm, Edge.to),
-                            "d": "M {fx},{fy} {tx},{ty}".format(fx=frm["x"], fy=frm["y"], tx=to["x"], ty=to["y"]),
+                            "id": "gmark_{frm}_{to}".format(frm=Edge.frm, to=Edge.to),
+                            "d": "M {fx},{fy} {tx},{ty}".format(fx=frm.x, fy=frm.y, tx=to.x, ty=to.y),
                             "style": "fill:none;stroke:#00F;stroke-width:1"
                         }
                     ]
                     gg.append(gmark)
-                    dx = float(to["x"]) - float(frm["x"])
-                    dy = float(to["y"]) - float(frm["y"])
-                    lx = (float(frm["x"]) + float(to["x"])) / 2
-                    ly = (float(frm["y"]) + float(to["y"])) / 2
+                    dx = float(to.x) - float(frm.x)
+                    dy = float(to.y) - float(frm.y)
+                    lx = (float(frm.x) + float(to.x)) / 2
+                    ly = (float(frm.y) + float(to.y)) / 2
                     pattern = {
-                        "~": {"d": "M " + frm["x"] + "," + frm["y"] + " c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-~": {"d": "M " + frm["x"] + "," + frm["y"] + " c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "~-": {"d": "M " + frm["x"] + "," + frm["y"] + " c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-|": {"d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx) + ",0 0," + str(dy)},
-                        "|-": {"d": "m " + frm["x"] + "," + frm["y"] + " 0," + str(dy) + " " + str(dx) + ",0"},
-                        "-|-": {"d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
+                        "~": {"d": "M " + frm.x + "," + frm.y + " c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "-~": {"d": "M " + frm.x + "," + frm.y + " c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "~-": {"d": "M " + frm.x + "," + frm.y + " c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "-|": {"d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
+                        "|-": {"d": "m " + frm.x + "," + frm.y + " 0," + str(dy) + " " + str(dx) + ",0"},
+                        "-|-": {"d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
                         "->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none"},
-                        "~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm["x"] + "," + frm["y"] + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm["x"] + "," + frm["y"] + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "~->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm["x"] + "," + frm["y"] + " " + "c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-|>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx) + ",0 0," + str(dy)},
-                        "|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm["x"] + "," + frm["y"] + " 0," + str(dy) + " " + str(dx) + ",0"},
-                        "-|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
+                        "~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "-~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "~->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "-|>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
+                        "|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " 0," + str(dy) + " " + str(dx) + ",0"},
+                        "-|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
                         "<->": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none"},
-                        "<~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm["x"] + "," + frm["y"] + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "<-~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm["x"] + "," + frm["y"] + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "<-|>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx) + ",0 0," + str(dy)},
-                        "<-|->": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm["x"] + "," + frm["y"] + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"}
+                        "<~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "<-~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
+                        "<-|>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
+                        "<-|->": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"}
                     }
-                    gmark[1].update(pattern.get(Edge["shape"], {"style": "fill:none;stroke:#00F;stroke-width:1"}))
+                    gmark[1].update(pattern.get(Edge.shape, {"style": "fill:none;stroke:#00F;stroke-width:1"}))
 
-                    if Edge["label"]:
-                        if Edge["shape"] == "-~":
-                            lx = float(frm["x"]) + (float(to["x"]) - float(frm["x"])) * 0.75
-                        if Edge["shape"] == "~-":
-                            lx = float(frm["x"]) + (float(to["x"]) - float(frm["x"])) * 0.25
-                        if Edge["shape"] == "-|":
-                            lx = float(to["x"])
-                        if Edge["shape"] == "|-":
-                            lx = float(frm["x"])
-                        if Edge["shape"] == "-~>":
-                            lx = float(frm["x"]) + (float(to["x"]) - float(frm["x"])) * 0.75
-                        if Edge["shape"] == "~->":
-                            lx = float(frm["x"]) + (float(to["x"]) - float(frm["x"])) * 0.25
-                        if Edge["shape"] == "-|>":
-                            lx = float(to["x"])
-                        if Edge["shape"] == "|->":
-                            lx = float(frm["x"])
-                        if Edge["shape"] == "<-~>":
-                            lx = float(frm["x"]) + (float(to["x"]) - float(frm["x"])) * 0.75
-                        if Edge["shape"] == "<-|>":
-                            lx = float(to["x"])
+                    if Edge.label:
+                        if Edge.shape == "-~":
+                            lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
+                        if Edge.shape == "~-":
+                            lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.25
+                        if Edge.shape == "-|":
+                            lx = float(to.x)
+                        if Edge.shape == "|-":
+                            lx = float(frm.x)
+                        if Edge.shape == "-~>":
+                            lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
+                        if Edge.shape == "~->":
+                            lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.25
+                        if Edge.shape == "-|>":
+                            lx = float(to.x)
+                        if Edge.shape == "|->":
+                            lx = float(frm.x)
+                        if Edge.shape == "<-~>":
+                            lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
+                        if Edge.shape == "<-|>":
+                            lx = float(to.x)
 
-                        lwidth = len(Edge["label"]) * self.font_width
+                        lwidth = len(Edge.label) * self.font_width
                         label = [
                             "text",
                             {
@@ -550,7 +548,7 @@ class WaveDrom(object):
                                 "x": int(lx),
                                 "y": int(ly + 3)
                             },
-                            ["tspan", Edge["label"]]
+                            ["tspan", Edge.label]
                         ]
                         underlabel = [
                             "rect",
@@ -704,8 +702,7 @@ class WaveDrom(object):
             self.renderGroups(groups, ret["groups"], index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane["tgo"]) / float(self.lane.xs))) * self.lane.xs
             width = (self.lane.xg + self.lane.xs * (self.lane.xmax + 1))
-            height = len(content) * self.lane.yo + self.lane.yh0 + \
-                self.lane.yh1 + self.lane.yf0 + self.lane.yf1
+            height = len(content) * self.lane.yo + self.lane.yh0 + self.lane.yh1 + self.lane.yf0 + self.lane.yf1
             output[1] = {
                 "id": "svgcontent_" + str(index),
                 "xmlns": "http://www.w3.org/2000/svg",
