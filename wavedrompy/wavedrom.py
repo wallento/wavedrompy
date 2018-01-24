@@ -254,7 +254,10 @@ class WaveDrom(object):
         return ret
 
     def renderWaveLane(self, root, content, index):
+        """
+        root=[]
 
+        """
         xmax = 0
         xgmax = 0
         glengths = []
@@ -420,15 +423,15 @@ class WaveDrom(object):
         marks = int(self.lane.xmax / mstep)
         gy = len(content) * int(self.lane.yo)
 
-        g = ["g", {"id": "gmarks_" + str(index)}]
+        g = ["g", {"id": "gmarks_{}".format(index)}]
         root.insert(0, g)
 
         for i in range(marks + 1):
             gg = [
                 "path",
                 {
-                    "id":    "gmark_" + str(i) + "_" + str(index),
-                    "d":     "m " + str(i * mmstep) + "," + "0" + " 0," + str(gy),
+                    "id":    "gmark_{i}_{index}".format(i=i, index=index),
+                    "d":     "m {dx},0 0,{gy}".format(dx=i * mmstep, gy=gy),
                     "style": "stroke:#888;stroke-width:0.5;stroke-dasharray:1,3"
                 }
             ]
@@ -461,16 +464,20 @@ class WaveDrom(object):
                     while len(Stack):
                         eventname = Stack[0]
                         Stack = Stack[1:]
+                        x = int(float(self.lane.xs) * (2 * pos * self.lane.period *
+                                                       self.lane.hscale - self.lane.phase) + float(self.lane.xlabel))
+                        y = int(idx * self.lane.yo + self.lane.y0 + float(self.lane.ys) * 0.5)
                         if eventname != ".":
-                            x = int(float(self.lane.xs) * (2 * pos * self.lane.period *
-                                                           self.lane.hscale - self.lane.phase) + float(self.lane.xlabel))
-                            y = int(idx * self.lane.yo + self.lane.y0 + float(self.lane.ys) * 0.5)
                             Events[eventname] = AttrDict({"x": str(x), "y": str(y)})
                         pos += 1
 
             gg = ["g", {"id": "wavearcs_{index}".format(index=index)}]
             root.append(gg)
 
+            const_style = AttrDict({
+                "a": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none",
+                "b": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none"
+            })
             if top.get("edge"):
                 for i, val in enumerate(top["edge"]):
                     Edge.words = val.split()
@@ -495,24 +502,83 @@ class WaveDrom(object):
                     lx = (float(frm.x) + float(to.x)) / 2
                     ly = (float(frm.y) + float(to.y)) / 2
                     pattern = {
-                        "~": {"d": "M " + frm.x + "," + frm.y + " c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-~": {"d": "M " + frm.x + "," + frm.y + " c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "~-": {"d": "M " + frm.x + "," + frm.y + " c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-|": {"d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
-                        "|-": {"d": "m " + frm.x + "," + frm.y + " 0," + str(dy) + " " + str(dx) + ",0"},
-                        "-|-": {"d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
-                        "->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none"},
-                        "~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-~>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "~->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + "0" + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "-|>": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
-                        "|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " 0," + str(dy) + " " + str(dx) + ",0"},
-                        "-|->": {"style": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"},
-                        "<->": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none"},
-                        "<~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(0.3 * dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "<-~>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "M " + frm.x + "," + frm.y + " " + "c " + str(0.7 * dx) + ", 0 " + str(dx) + ", " + str(dy) + " " + str(dx) + ", " + str(dy)},
-                        "<-|>": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx) + ",0 0," + str(dy)},
-                        "<-|->": {"style": "marker-end:url(#arrowhead);marker-start:url(#arrowtail);stroke:#0041c4;stroke-width:1;fill:none", "d": "m " + frm.x + "," + frm.y + " " + str(dx / 2) + ",0 0," + str(dy) + " " + str(dx / 2) + ",0"}
+                        "~": {"d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                              dx=(0.7 * dx), dy=0,
+                                                                                              dxx=(0.3 * dx), dyy=dy,
+                                                                                              dxxx=dx, dyyy=dy)},
+                        "-~": {"d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                               dx=(0.7 * dx), dy=0,
+                                                                                               dxx=dx, dyy=dy,
+                                                                                               dxxx=dx, dyyy=dy)},
+                        "~-": {"d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                               dx=0, dy=0,
+                                                                                               dxx=(0.3 * dx), dyy=dy,
+                                                                                               dxxx=dx, dyyy=dy)},
+                        "-|": {"d": "m {fx},{fy} {dx},{dy} {dxx},{dyy}".format(fx=frm.x, fy=frm.y,
+                                                                               dx=dx, dy=0,
+                                                                               dxx=0, dyy=dy)},
+                        "|-": {"d": "m {fx},{fy} {dx},{dy} {dxx},{dyy}".format(fx=frm.x, fy=frm.y,
+                                                                               dx=0, dy=dy,
+                                                                               dxx=dx, dyy=0)},
+                        "-|-": {"d": "m {fx},{fy} {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                              dx=(dx / 2), dy=0,
+                                                                                              dxx=0, dyy=dy,
+                                                                                              dxxx=(dx / 2), dyyy=0)},
+                        "->": {"style": const_style.a},
+                        "~>": {"style": const_style.a,
+                               "d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                               dx=(0.7 * dx), dy=0,
+                                                                                               dxx=(0.3 * dx), dyy=dy,
+                                                                                               dxxx=dx, dyyy=dy)},
+                        "-~>": {"style": const_style.a,
+                                "d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                                dx=(0.7 * dx), dy=0,
+                                                                                                dxx=dx, dyy=dy,
+                                                                                                dxxx=dx, dyyy=dy)},
+                        "~->": {"style": const_style.a,
+                                "d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                                dx=0, dy=0,
+                                                                                                dxx=(0.3 * dx), dyy=dy,
+                                                                                                dxxx=dx, dyyy=dy)},
+                        "-|>": {"style": const_style.a,
+                                "d": "m {fx},{fy} {dx},{dy} {dxx},{dyy}".format(fx=frm.x, fy=frm.y,
+                                                                                dx=dx, dy=0,
+                                                                                dxx=0, dyy=dy)},
+                        "|->": {"style": const_style.a,
+                                "d": "m {fx},{fy} {dx},{dy} {dxx},{dyy}".format(fx=frm.x, fy=frm.y,
+                                                                                dx=0, dy=dy,
+                                                                                dxx=dx, dyy=0
+                                                                                )},
+                        "-|->": {"style": const_style.a,
+                                 "d": "m {fx},{fy} {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                               dx=(dx / 2), dy=0,
+                                                                                               dxx=0, dyy=dy,
+                                                                                               dxxx=(dx / 2), dyyy=0
+                                                                                               )},
+                        "<->": {"style": const_style.b},
+                        "<~>": {"style": const_style.b,
+                                "d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                                dx=(0.7 * dx), dy=0,
+                                                                                                dxx=(0.3 * dx), dyy=dy,
+                                                                                                dxxx=dx, dyyy=dy
+                                                                                                )},
+                        "<-~>": {"style": const_style.b,
+                                 "d": "M {fx},{fy} c {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                                 dx=(0.7 * dx), dy=0,
+                                                                                                 dxx=dx, dyy=dy,
+                                                                                                 dxxx=dx, dyyy=dy
+                                                                                                 )},
+                        "<-|>": {"style": const_style.b,
+                                 "d": "m {fx},{fy} {dx},{dy} {dxx},{dyy}".format(fx=frm.x, fy=frm.y,
+                                                                                 dx=dx, dy=0,
+                                                                                 dxx=0, dyy=dy
+                                                                                 )},
+                        "<-|->": {"style": const_style.b,
+                                  "d": "m {fx},{fy} {dx},{dy} {dxx},{dyy} {dxxx},{dyyy}".format(fx=frm.x, fy=frm.y,
+                                                                                                dx=(dx / 2), dy=0,
+                                                                                                dxx=0, dyy=dy,
+                                                                                                dxxx=(dx / 2), dyyy=0,
+                                                                                                )}
                     }
                     gmark[1].update(pattern.get(Edge.shape, {"style": "fill:none;stroke:#00F;stroke-width:1"}))
 
@@ -592,6 +658,9 @@ class WaveDrom(object):
                         gg.append(label)
 
     def parseConfig(self, source):
+        """
+        source = AttrDict()
+        """
 
         self.lane.hscale = 1
         if self.lane.get("hscale0"):
@@ -629,30 +698,38 @@ class WaveDrom(object):
                 self.lane.foot["text"] = source["foot"]["text"]
 
     def rec(self, tmp, state):
+        """
+        tmp = source["signal"] = []
+        state = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
+        """
 
         name = str(tmp[0])
         delta_x = 25
 
-        state["x"] += delta_x
+        state.x += delta_x
         for idx, val in enumerate(tmp):
             if type(val) is list:
-                old_y = state["y"]
+                old_y = state.y
                 self.rec(val, state)
-                state["groups"].append({"x": state["xx"],
+                state["groups"].append({"x": state.xx,
                                         "y": old_y,
-                                        "height": state["y"] - old_y,
+                                        "height": state.y - old_y,
                                         "name": state["name"]})
             elif type(val) is dict:
                 state["lanes"].append(val)
-                state["width"].append(state["x"])
-                state["y"] += 1
+                state["width"].append(state.x)
+                state.y += 1
 
-        state["xx"] = state["x"]
-        state["x"] -= delta_x
-        state["name"] = name
+        state.xx = state.x
+        state.x -= delta_x
+        state.name = name
 
     def insertSVGTemplate(self, index, parent, source):
-
+        """
+        index = 0
+        parent = []
+        source = {}
+        """
         e = waveskin.WaveSkin["default"]
 
         if source.get("config") and source.get("config").get("skin"):
@@ -660,6 +737,7 @@ class WaveDrom(object):
                 e = waveskin.WaveSkin[source.get("config").get("skin")]
 
         if index == 0:
+            # ["rect", {"y": "15", "x": "6", "height": "20", "width": "20"}]
             self.lane.xs = int(e[3][1][2][1]["width"])
             self.lane.ys = int(e[3][1][2][1]["height"])
             self.lane.xlabel = int(e[3][1][2][1]["x"])
@@ -682,6 +760,11 @@ class WaveDrom(object):
         parent.extend(e)
 
     def renderWaveForm(self, index, source, output):
+        """
+        index = 0
+        source = {}
+        output = []
+        """
 
         xmax = 0
         root = []
@@ -725,8 +808,8 @@ class WaveDrom(object):
         xmlns = "http://www.w3.org/XML/1998/namespace"
 
         for i in range(len(groups)):
-            dx = groups[i]["x"] + 0.5
-            dy = groups[i]["y"] * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
+            dx = groups[i].x + 0.5
+            dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
             h = int(groups[i]["height"] * self.lane.yo - 16)
             group = [
                 "path",
