@@ -58,7 +58,7 @@ class WaveDrom(object):
             "foot": {}
         })
 
-    def genBrick(self, texts, extra, times):
+    def genBrick(self, texts="", extra="", times=""):
 
         R = []
         if len(texts) == 4:
@@ -83,7 +83,7 @@ class WaveDrom(object):
             R.append(texts[1])
         return R
 
-    def genFirstWaveBrick(self, text, extra, times):
+    def genFirstWaveBrick(self, text="", extra="", times=""):
 
         pattern = {
             "p": ["pclk", "111", "nclk", "000"],
@@ -108,7 +108,7 @@ class WaveDrom(object):
 
         return self.genBrick(pattern.get(text,  ["xxx"]), extra, times)
 
-    def genWaveBrick(self, text, extra, times):
+    def genWaveBrick(self, text="", extra="", times=""):
 
         x1 = {"p": "pclk", "n": "nclk",
               "P": "Pclk", "N": "Nclk",
@@ -182,7 +182,7 @@ class WaveDrom(object):
                 # pnPN
                 return self.genBrick([tmp1, tmp0, tmp2, x6[atext[1]]], extra, times)
 
-    def parseWaveLane(self, text, extra):
+    def parseWaveLane(self, text="", extra=""):
 
         R = []
         Stack = text
@@ -210,7 +210,7 @@ class WaveDrom(object):
             R = R[1:]
         return R
 
-    def parseWaveLanes(self, sig):
+    def parseWaveLanes(self, sig=""):
 
         def data_extract(e):
             tmp = e.get("data")
@@ -233,7 +233,7 @@ class WaveDrom(object):
 
         return content
 
-    def findLaneMarkers(self, lanetext):
+    def findLaneMarkers(self, lanetext=""):
 
         lcount = 0
         gcount = 0
@@ -253,7 +253,7 @@ class WaveDrom(object):
 
         return ret
 
-    def renderWaveLane(self, root, content, index):
+    def renderWaveLane(self, root=[], content="", index=0):
         """
         root=[]
 
@@ -341,7 +341,7 @@ class WaveDrom(object):
         self.lane.xg = xgmax + 20
         return glengths
 
-    def renderMarks(self, root, content, index):
+    def renderMarks(self, root=[], content="", index=0):
 
         def captext(g, cxt, anchor, y):
 
@@ -349,7 +349,7 @@ class WaveDrom(object):
                 tmark = [
                     "text",
                     {
-                        "x": float(cxt["xmax"]) * float(cxt["xs"]) / 2,
+                        "x": float(cxt.xmax) * float(cxt.xs) / 2,
                         "y": y,
                         "text-anchor": "middle",
                         "fill": "#000",
@@ -657,7 +657,7 @@ class WaveDrom(object):
                         ]
                         gg.append(label)
 
-    def parseConfig(self, source):
+    def parseConfig(self, source={}):
         """
         source = AttrDict()
         """
@@ -697,7 +697,7 @@ class WaveDrom(object):
                 self.lane.yf1 = 46
                 self.lane.foot["text"] = source["foot"]["text"]
 
-    def rec(self, tmp, state):
+    def rec(self, tmp=[], state={}):
         """
         tmp = source["signal"] = []
         state = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
@@ -714,7 +714,7 @@ class WaveDrom(object):
                 state["groups"].append({"x": state.xx,
                                         "y": old_y,
                                         "height": state.y - old_y,
-                                        "name": state["name"]})
+                                        "name": state.name})
             elif type(val) is dict:
                 state["lanes"].append(val)
                 state["width"].append(state.x)
@@ -724,7 +724,7 @@ class WaveDrom(object):
         state.x -= delta_x
         state.name = name
 
-    def insertSVGTemplate(self, index, parent, source):
+    def insertSVGTemplate(self, index=0, parent=[], source={}):
         """
         index = 0
         parent = []
@@ -744,7 +744,11 @@ class WaveDrom(object):
             self.lane.ym = int(e[3][1][2][1]["y"])
 
         else:
-            e = ["svg", {"id": "svg", "xmlns": "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", "height": "0"},
+            e = ["svg",
+                 {"id": "svg",
+                  "xmlns": "http://www.w3.org/2000/svg",
+                  "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                  "height": "0"},
                  ["g", {"id": "waves"},
                   ["g", {"id": "lanes"}],
                   ["g", {"id": "groups"}]
@@ -759,7 +763,7 @@ class WaveDrom(object):
 
         parent.extend(e)
 
-    def renderWaveForm(self, index, source, output):
+    def renderWaveForm(self, index=0, source={}, output=[]):
         """
         index = 0
         source = {}
@@ -802,12 +806,12 @@ class WaveDrom(object):
         output[-1][2].extend(root)
         output[-1][3].extend(groups)
 
-    def renderGroups(self, root, groups, index):
+    def renderGroups(self, root=[], groups=[], index=0):
 
         svgns = "http://www.w3.org/2000/svg",
         xmlns = "http://www.w3.org/XML/1998/namespace"
 
-        for i in range(len(groups)):
+        for i, val in enumerate(groups):
             dx = groups[i].x + 0.5
             dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
             h = int(groups[i]["height"] * self.lane.yo - 16)
