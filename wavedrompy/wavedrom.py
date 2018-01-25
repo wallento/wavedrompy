@@ -939,13 +939,14 @@ class WaveDrom(object):
         return svg_output
 
 
-def main():
-    parser = argparse.ArgumentParser(description="")
-    parser.add_argument("--input", "-i", help="<input wavedrom source filename>")
-    # parser.add_argument("--png", "-p", help="<output PNG image file name>")
-    # parser.add_argument("--pdf", "-P", help="<output PDF file name>")
-    parser.add_argument("--svg", "-s", help="<output SVG image file name>")
-    args = parser.parse_args()
+def main(args=None):
+    if not args:
+        parser = argparse.ArgumentParser(description="")
+        parser.add_argument("--input", "-i", help="<input wavedrom source filename>")
+        # parser.add_argument("--png", "-p", help="<output PNG image file name>")
+        # parser.add_argument("--pdf", "-P", help="<output PDF file name>")
+        parser.add_argument("--svg", "-s", help="<output SVG image file name>")
+        args = parser.parse_args()
 
     output = []
     inputfile = args.input
