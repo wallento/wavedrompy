@@ -869,10 +869,18 @@ class WaveDrom(object):
                   "xmlns": "http://www.w3.org/2000/svg",
                   "xmlns:xlink": "http://www.w3.org/1999/xlink",
                   "height": "0"},
-                 ["g", {"id": "waves"},
-                  ["g", {"id": "lanes"}],
-                  ["g", {"id": "groups"}]
-                  ]
+                 [  # e[-1]
+                     "g",  # e[-1][0]
+                     {"id": "waves"},  # e[-1][1]
+                     [  # e[-1][2]
+                         "g",  # e[-1][2][0]
+                         {"id": "lanes"}  # e[-1][2][1]
+                     ],
+                     [  # e[-1][3]
+                         "g",  # e[-1][3][0]
+                         {"id": "groups"}  # e[-1][3][1]
+                     ]
+                 ]
                  ]
 
         e[-1][1]["id"] = "waves_{index}".format(index=index)
