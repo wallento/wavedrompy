@@ -335,7 +335,7 @@ class WaveDrom(object):
                             "use",
                             {
                                 # "id": "use_" + str(i) + "_" + str(j) + "_" + str(index),
-                                # "xmlns:xlink": xlinkns,
+                                "xmlns:xlink": xlinkns,
                                 "xlink:href": "#{}".format(val[1][i]),
                                 "transform": "translate({})".format(i * self.lane.xs)
                             }
@@ -829,17 +829,10 @@ class WaveDrom(object):
             if waveskin.WaveSkin.get(source.get("config").get("skin")):
                 skin = waveskin.WaveSkin[source.get("config").get("skin")]
 
-        template = svgwrite.Drawing("default.svg", size=("100%", 0), id="svgcontent_{index}".format(index=index))
+        template = svgwrite.Drawing(id="svgcontent_{index}".format(index=index))
         if index == 0:
             template.defs.add(template.style(css.css.default))
             [template.defs.add(get_container(e)) for e in skin[3][1:]]
-
-        waves = template.g(id="waves_{index}".format(index=index))
-        lanes = template.g(id="lanes_{index}".format(index=index))
-        groups = template.g(id="groups_{index}".format(index=index))
-        waves.add(lanes)
-        waves.add(groups)
-        template.add(waves)
 
         return template
 
@@ -904,10 +897,13 @@ class WaveDrom(object):
 
         if source.get("signal"):
             self.insertSVGTemplate(index, output, source)
-            # root = self.anotherTemplate(index, source)
+            # template = self.anotherTemplate(index, source)
+            # waves = template.g(id="waves_{index}".format(index=index))
+            # lanes = template.g(id="lanes_{index}".format(index=index))
+            # groups = template.g(id="groups_{index}".format(index=index))
             self.parseConfig(source)
             ret = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
-            self.rec(source["signal"], ret)
+            self.rec(source["signal"], ret)  # parse lanes
             content = self.parseWaveLanes(ret.lanes)
             glengths = self.renderWaveLane(root, content, index)
             for i, val in enumerate(glengths):
@@ -918,7 +914,7 @@ class WaveDrom(object):
             self.renderGaps(root, ret.lanes, index)
             self.renderGroups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
-            width = (self.lane.xg + self.lane.xs * (self.lane.xmax + 1))
+            width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
             height = len(content) * self.lane.yo + self.lane.yh0 + self.lane.yh1 + self.lane.yf0 + self.lane.yf1
             output[1] = {
                 "id": "svgcontent_{}".format(index),
@@ -926,12 +922,16 @@ class WaveDrom(object):
                 "xmlns:xlink": "http://www.w3.org/1999/xlink",
                 "width": str(width),
                 "height": str(height),
-                "viewBox": "0 0 {w},{h}".format(w=width, h=height),
+                "viewBox": "0 0 {w} {h}".format(w=width, h=height),
                 "overflow": "hidden"
             }
             dx = self.lane.xg + 0.5
             dy = float(self.lane.yh0) + float(self.lane.yh1)
             output[-1][2][1]["transform"] = "translate({dx},{dy})".format(dx=dx, dy=dy)
+
+            # waves.add(lanes)
+            # waves.add(groups)
+            # template.add(waves)
 
         output[-1][2].extend(root)
         output[-1][3].extend(groups)
@@ -945,6 +945,9 @@ class WaveDrom(object):
             dx = groups[i].x + 0.5
             dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
             h = int(groups[i]["height"] * self.lane.yo - 16)
+            # group = self.element.path(id="group_{i}_{index}".format(i=i, index=index),
+            #                           d="m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h}".format(dx=dx, dy=dy, h=h),
+            #                           style="stroke:#0041c4;stroke-width:1;fill:none")
             group = [
                 "path",
                 {
@@ -956,11 +959,21 @@ class WaveDrom(object):
                 }
             ]
             root.append(group)
+            # root.add(group)
 
             name = groups[i]["name"]
             x = int(groups[i]["x"] - 10)
             y = int(self.lane.yo * (groups[i]["y"] + (float(groups[i]["height"]) / 2)) +
                     self.lane.yh0 + self.lane.yh1)
+            # label = self.container.g()
+            # label.translate(x, y)
+            # gg = self.container.g()
+            # gg.rotate(270)
+            # t = self.element.text(self.element.tspan(name), text_anchor="middle")
+            # t["class"] = "info"
+            # t["xml:space"] = "preserve"
+            # gg.add(t)
+            # label.add(gg)
             label = [
                 ["g",
                  # {"transform": "translate(" + x + "," + y + ")"},
@@ -977,6 +990,7 @@ class WaveDrom(object):
                  ]
             ]
             root.append(label)
+            # root.add(label)
 
     def renderGaps(self, root, source, index):
 
@@ -986,6 +1000,7 @@ class WaveDrom(object):
 
         if source:
 
+            # gg = self.container.g(id="wavegaps_{index}".format(index=index))
             gg = [
                 "g",
                 {"id": "wavegaps_{index}".format(index=index)}
@@ -996,6 +1011,8 @@ class WaveDrom(object):
                 self.lane.phase = int(val.get("phase", 0) * 2)
 
                 dy = self.lane.y0 + idx * self.lane.yo
+                # g = self.container.g(id="wavegap_{i}_{index}".format(i=idx, index=index))
+                # g.translate(0, dy)
                 g = [
                     "g",
                     {
@@ -1017,6 +1034,8 @@ class WaveDrom(object):
                         if c == "|":
                             dx = float(self.lane.xs) * ((2 * pos + 1) * float(self.lane.period)
                                                         * float(self.lane.hscale) - float(self.lane.phase))
+                            # b = self.container.use(href="#gap")
+                            # b.translate(dx)
                             b = [
                                 "use",
                                 {
@@ -1027,9 +1046,12 @@ class WaveDrom(object):
                                 }
                             ]
                             g.append(b)
+                            # g.add(b)
                         pos += 1
+                # gg.add(g)
 
             root.append(gg)
+            # root.add(gg)
 
     def is_type_str(self, var):
         if sys.version_info[0] < 3:
@@ -1089,11 +1111,13 @@ def main(args=None):
         with open(inputfile, "r") as f:
             jinput = json.load(f)
 
+        # output = wavedrom.renderWaveForm(0, jinput)
         wavedrom.renderWaveForm(0, jinput, output)
-        svg_output = wavedrom.convert_to_svg(output)
 
+        svg_output = wavedrom.convert_to_svg(output)
         with open(outputfile, "w") as f:
             f.write(svg_output)
+        # output.saveas(outputfile,pretty=True)
 
 
 if __name__ == "__main__":
