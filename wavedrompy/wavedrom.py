@@ -979,6 +979,8 @@ class WaveDrom(object):
             #     "viewBox": "0 0 {w} {h}".format(w=width, h=height),
             #     "overflow": "hidden"
             # }
+            template["width"] = width
+            template["height"] = height
             template.viewbox(0, 0, width, height)
             dx = self.lane.xg + 0.5
             dy = float(self.lane.yh0) + float(self.lane.yh1)
