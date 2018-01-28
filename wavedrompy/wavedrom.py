@@ -369,7 +369,7 @@ class WaveDrom(object):
                     if len(val[1]) > xmax:
                         xmax = len(val[1])
                 g.add(gg)
-        root.add(g)
+                root.add(g)
         self.lane.xmax = xmax
         self.lane.xg = xgmax + 20
         return glengths
@@ -379,10 +379,11 @@ class WaveDrom(object):
         def captext(g, cxt, anchor, y):
 
             if cxt.get(anchor) and cxt[anchor].get("text"):
-                # print(cxt[anchor]["text"])  # list
                 tmark = self.element.text("", x=[float(cxt.xmax) * float(cxt.xs) / 2],
                                           y=[y], text_anchor="middle", fill="#000")
                 tmark["xml:space"] = "preserve"
+                tmark.add(self.element.tspan(cxt[anchor]["text"]))
+                # print(cxt[anchor]["text"])  # list
                 # tmark = [
                 #     "text",
                 #     {
@@ -491,7 +492,6 @@ class WaveDrom(object):
         ticktock(g, self.lane, "head", "tock", mmstep / 2, mmstep,      -5, marks)
         ticktock(g, self.lane, "foot", "tick",          0, mmstep, gy + 15, marks + 1)
         ticktock(g, self.lane, "foot", "tock", mmstep / 2, mmstep, gy + 15, marks)
-        # print(g)
         return g
 
     def renderArcs(self, root, source, index, top):
@@ -630,10 +630,15 @@ class WaveDrom(object):
                                                                                                 dxxx=(dx / 2), dyyy=0,
                                                                                                 )}
                     }
-                    pat = pattern.get(Edge.shape, {"style": "fill:none;stroke:#00F;stroke-width:1"})
+                    pat = pattern.get(Edge.shape, {"style": "fill:none;stroke:#00F;stroke-width:1",
+                                                   "d": "M {fx},{fy} {tx},{ty}".format(fx=frm.x, fy=frm.y,
+                                                                                       tx=to.x, ty=to.y)
+                                                   })
                     # gmark[1].update(pat)
                     gmark = self.element.path(id="gmark_{frm}_{to}".format(frm=Edge.frm, to=Edge.to),
-                                              d=pat.get("d"), style=pat.get("style"))
+                                              d=pat.get("d", "M {fx},{fy} {tx},{ty}".format(fx=frm.x, fy=frm.y,
+                                                                                            tx=to.x, ty=to.y)),
+                                              style=pat.get("style", "fill:none;stroke:#00F;stroke-width:1"))
                     gg.add(gmark)
 
                     if Edge.label:
@@ -736,7 +741,7 @@ class WaveDrom(object):
                         # gg.append(label)
                         gg.add(label)
             root.add(gg)
-            return root
+            # return root
 
     def parseConfig(self, source={}):
         """
@@ -955,13 +960,12 @@ class WaveDrom(object):
             self.rec(source["signal"], ret)  # parse lanes
             content = self.parseWaveLanes(ret.lanes)
             glengths = self.renderWaveLane(lanes, content, index)
-            print (lanes)
             for i, val in enumerate(glengths):
                 xmax = max(xmax, (val + ret.width[i]))
             # self.renderMarks(root, content, index)
             marks = self.renderMarks(lanes, content, index)
-            lanes = self.renderArcs(lanes, ret.lanes, index, source)
-            lanes = self.renderGaps(lanes, ret.lanes, index)
+            self.renderArcs(lanes, ret.lanes, index, source)
+            self.renderGaps(lanes, ret.lanes, index)
             self.renderGroups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
@@ -1106,7 +1110,7 @@ class WaveDrom(object):
 
             # root.append(gg)
             root.add(gg)
-            return root
+            # return root
 
     def is_type_str(self, var):
         if sys.version_info[0] < 3:
@@ -1121,25 +1125,25 @@ class WaveDrom(object):
         if type(root) is list:
             if len(root) >= 2 and type(root[1]) is dict:
                 if len(root) == 2:
-                    svg_output += "<" + root[0] + self.convert_to_svg(root[1]) + "/>\n"
+                    svg_output += "<{}{}/>\n".format(root[0], self.convert_to_svg(root[1]))
                 elif len(root) >= 3:
-                    svg_output += "<" + root[0] + self.convert_to_svg(root[1]) + ">\n"
+                    svg_output += "<{}{}/>\n".format(root[0], self.convert_to_svg(root[1]))
                     if len(root) == 3:
                         svg_output += self.convert_to_svg(root[2])
                     else:
                         svg_output += self.convert_to_svg(root[2:])
-                    svg_output += "</" + root[0] + ">\n"
+                    svg_output += "</{}>\n".format(root[0])
             elif type(root[0]) is list:
                 for eleml in root:
                     svg_output += self.convert_to_svg(eleml)
             else:
-                svg_output += "<" + root[0] + ">\n"
+                svg_output += "<{}>\n".format(root[0])
                 for eleml in root[1:]:
                     svg_output += self.convert_to_svg(eleml)
-                svg_output += "</" + root[0] + ">\n"
+                svg_output += "</{}>\n".format(root[0])
         elif type(root) is dict:
             for elemd in root:
-                svg_output += " " + elemd + "=\"" + str(root[elemd]) + "\""
+                svg_output += " {}=\"{}\"".format(elemd, root[elemd])
         else:
             svg_output += root
 
