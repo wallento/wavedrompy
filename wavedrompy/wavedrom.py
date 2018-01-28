@@ -376,14 +376,29 @@ class WaveDrom(object):
 
     def renderMarks(self, root=[], content="", index=0):
 
+        def get_elem(e):
+            if len(e) == 3:
+                ret = self.element[e[0]](e[2])
+                ret.attribs = e[1]
+            elif len(e) == 2:
+                ret = self.element[e[0]](e[1])
+            else:
+                ret = self.element.tspan(e)
+            return ret
+
         def captext(g, cxt, anchor, y):
 
             if cxt.get(anchor) and cxt[anchor].get("text"):
                 tmark = self.element.text("", x=[float(cxt.xmax) * float(cxt.xs) / 2],
                                           y=[y], text_anchor="middle", fill="#000")
                 tmark["xml:space"] = "preserve"
-                tmark.add(self.element.tspan(cxt[anchor]["text"]))
+                [tmark.add(get_elem(e)) for e in cxt[anchor]["text"][1:]]
                 # print(cxt[anchor]["text"])  # list
+                # cxt[anchor]["text"] = ["tspan",  # [0
+                #                        ["tspan", {"class": "error h1"}, "error"],  # [1] case 1
+                #                        ["tspan", "E=mc"],  # [2] case 2
+                #                        "default",  # [3] case 3
+                #                        ]
                 # tmark = [
                 #     "text",
                 #     {
