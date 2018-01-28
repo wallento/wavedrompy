@@ -19,7 +19,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
 
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 requires = ["svgwrite",
             "attrdict"
             ]
