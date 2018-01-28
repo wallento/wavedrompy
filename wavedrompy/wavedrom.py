@@ -1178,7 +1178,7 @@ def main(args=None):
         # svg_output = wavedrom.convert_to_svg(output)
         # with open(outputfile, "w") as f:
         #     f.write(svg_output)
-        output.saveas(outputfile, pretty=True)
+        output.saveas(outputfile)
 
 
 if __name__ == "__main__":
