@@ -865,14 +865,14 @@ class WaveDrom(object):
              ],
             """
             ctype = elem[0]
-            cid = elem[1]["id"]
+            ret = self.container[ctype]()
+            ret.attribs = elem[1]
 
             def gen_elem(e):
                 if e[0] == "path":
                     attr = e[1]
                     elem = self.element.path(d=attr["d"])
-                    if attr.get("class"):
-                        elem["class"] = attr["class"]
+                    elem.attribs = attr
                 elif e[0] == "rect":
                     attr = e[1]
                     x = attr["x"]
@@ -880,9 +880,9 @@ class WaveDrom(object):
                     w = attr["width"]
                     h = attr["height"]
                     elem = self.element.rect(insert=(x, y), size=(w, h))
+                    elem.attribs = attr
 
                 return elem
-            ret = self.container[ctype](id=cid)
             [ret.add(gen_elem(e)) for e in elem[2:]]
 
             return ret
