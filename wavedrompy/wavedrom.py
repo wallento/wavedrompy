@@ -351,7 +351,6 @@ class WaveDrom(object):
                                     tx = int(labels[k]) * self.lane.xs + self.lane.xlabel
                                     title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
                                     title.add(self.element.tspan(val[2][k]))
-                                    title["class"] = "info"
                                     title["xml:space"] = "preserve"
                                     # title = [
                                     #     "text",
