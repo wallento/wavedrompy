@@ -28,7 +28,7 @@
 import sys
 import json
 import math
-from wavedrompy import waveskin, css
+from . import waveskin, css
 import argparse
 from attrdict import AttrDict
 import svgwrite
