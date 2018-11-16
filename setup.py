@@ -35,7 +35,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="wavedrompy",  # Required
+    name="wavedrom",  # Required
 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
@@ -68,7 +68,7 @@ setup(
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author="Aliaksei Chapyzhenka/BreizhGeek/K4ZUKI",  # Optional
+    author="Aliaksei Chapyzhenka, BreizhGeek, Kazuki Yamamoto",  # Optional
 
     # This should be a valid email address corresponding to the author listed
     # above.
