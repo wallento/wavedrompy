@@ -19,7 +19,6 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
 
-VERSION = "0.0.5"
 requires = ["svgwrite",
             "attrdict"
             ]
@@ -43,7 +42,10 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version=VERSION,  # Required
+    use_scm_version={
+        "relative_to": __file__,
+        "write_to": "wavedrom/version.py",
+    },
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -137,6 +139,10 @@ setup(
         # "dev": ["check-manifest"],
         # "test": ["coverage"],
     },
+
+    setup_requires=[
+        'setuptools_scm',
+    ],
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.
