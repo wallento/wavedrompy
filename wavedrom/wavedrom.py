@@ -202,6 +202,7 @@ class WaveDrom(object):
         Stack = text
         Next = Stack[0]
         Stack = Stack[1:]
+        subCycle = False
 
         Repeats = 1
         while len(Stack) and (Stack[0] in [".", "|"]):  # repeaters parser
@@ -214,11 +215,22 @@ class WaveDrom(object):
             Top = Next
             Next = Stack[0]
             Stack = Stack[1:]
+            if Next == '<':
+                subCycle = True
+                Next = Stack[0]
+                Stack = Stack[1:]
+            if Next == '>':
+                subCycle = False
+                Next = Stack[0]
+                Stack = Stack[1:]
             Repeats = 1
             while len(Stack) and (Stack[0] in [".", "|"]):  # repeaters parser
                 Stack = Stack[1:]
                 Repeats += 1
-            R.extend(self.genWaveBrick((Top + Next), extra, Repeats))
+            if subCycle:
+                R.extend(self.genWaveBrick((Top + Next), 0, Repeats - self.lane.period))
+            else:
+                R.extend(self.genWaveBrick((Top + Next), extra, Repeats))
 
         for i in range(self.lane.phase):
             R = R[1:]
@@ -1075,10 +1087,7 @@ class WaveDrom(object):
         if source:
 
             gg = self.container.g(id="wavegaps_{index}".format(index=index))
-            # gg = [
-            #     "g",
-            #     {"id": "wavegaps_{index}".format(index=index)}
-            # ]
+            subCycle = False
 
             for idx, val in enumerate(source):
                 self.lane.period = val.get("period", 1)
@@ -1087,41 +1096,34 @@ class WaveDrom(object):
                 dy = self.lane.y0 + idx * self.lane.yo
                 g = self.container.g(id="wavegap_{i}_{index}".format(i=idx, index=index))
                 g.translate(0, dy)
-                # g = [
-                #     "g",
-                #     {
-                #         # "id": "wavegap_" + str(i) + "_" + str(index),
-                #         # "transform": "translate(0," + str(self.lane.y0 + i * self.lane.yo) + ")"
-                #         "id": "wavegap_{i}_{index}".format(i=idx, index=index),
-                #         "transform": "translate(0,{dy})".format(dy=dy)
-                #     }
-                # ]
-                # gg.append(g)
 
                 if val.get("wave"):
                     text = val["wave"]
                     Stack = text
                     pos = 0
                     while len(Stack):
-                        c = Stack[0]
+                        next = Stack[0]
                         Stack = Stack[1:]
-                        if c == "|":
-                            dx = float(self.lane.xs) * ((2 * pos + 1) * float(self.lane.period)
-                                                        * float(self.lane.hscale) - float(self.lane.phase))
+                        if next == '<':
+                            subCycle = True
+                            next = Stack[0]
+                            Stack = Stack[1:]
+                        if next == '>':
+                            subCycle = False
+                            next = Stack[0]
+                            Stack = Stack[1:]
+                        if subCycle:
+                            pos += 1
+                        else:
+                            pos += 2 * self.lane.period
+                        if next == "|":
+                            if subCycle:
+                                dx = float(self.lane.xs) * pos * float(self.lane.hscale) - float(self.lane.phase)
+                            else:
+                                dx = float(self.lane.xs) * (pos - self.lane.period) * float(self.lane.hscale) - float(self.lane.phase)
                             b = self.container.use(href="#gap")
                             b.translate(dx)
-                            # b = [
-                            #     "use",
-                            #     {
-                            #         "xmlns:xlink": xlinkns,
-                            #         "xlink:href": "#gap",
-                            #         # "transform": "translate(" + str(int(float(self.lane.xs) * ((2 * pos + 1) * float(self.lane.period) * float(self.lane.hscale) - float(self.lane.phase)))) + ")"
-                            #         "transform": "translate({dx})".format(dx=dx)
-                            #     }
-                            # ]
-                            # g.append(b)
                             g.add(b)
-                        pos += 1
                 gg.add(g)
 
             # root.append(gg)
