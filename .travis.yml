@@ -8,11 +8,13 @@ python:
 
 before_install:
   - sudo apt-get install -y librsvg2-bin
+  - pip install --upgrade pytest
 
 install:
   - python setup.py install
 
 script:
+  - pytest
   - cd test; ./test.sh
 
 
