@@ -28,28 +28,15 @@
 import sys
 import json
 import math
-from . import waveskin, css
-import argparse
-from attrdict import AttrDict
 import svgwrite
 
+from . import waveskin, css
+from .base import SVGBase
+import argparse
+from attrdict import AttrDict
 
-class WaveDrom(object):
 
-    container = AttrDict({
-        "defs": svgwrite.container.Defs,
-        "g": svgwrite.container.Group,
-        "marker": svgwrite.container.Marker,
-        "use": svgwrite.container.Use,
-    })
-    element = AttrDict({
-        "rect": svgwrite.shapes.Rect,
-        "path": svgwrite.path.Path,
-        "text": svgwrite.text.Text,
-        "tspan": svgwrite.text.TSpan,
-        "title": svgwrite.base.Title,
-    })
-
+class WaveDrom(SVGBase):
     def __init__(self):
 
         self.font_width = 7

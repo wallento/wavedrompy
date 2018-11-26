@@ -1,8 +1,7 @@
 from collections import namedtuple
-
 import svgwrite
 
-from wavedrom import WaveDrom
+from .base import SVGBase
 
 
 class RenderState:
@@ -18,7 +17,7 @@ class RenderState:
 RenderObject = namedtuple("RenderObject", "name x y")
 
 
-class Assign(WaveDrom):
+class Assign(SVGBase):
     def render_tree(self, tree, state):
         state.xmax = max(state.xmax, state.x)
         y = state.y
