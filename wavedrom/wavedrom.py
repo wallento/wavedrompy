@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # The MIT License (MIT)
 #
 # Copyright (c) 2011-2016 Aliaksei Chapyzhenka
@@ -26,14 +25,12 @@
 #
 
 import sys
-import json
 import math
 import svgwrite
+from attrdict import AttrDict
 
 from . import waveskin, css
 from .base import SVGBase
-import argparse
-from attrdict import AttrDict
 
 
 class WaveDrom(SVGBase):
@@ -1154,36 +1151,3 @@ class WaveDrom(SVGBase):
             svg_output += root
 
         return svg_output
-
-
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser(description="")
-        parser.add_argument("--input", "-i", help="<input wavedrom source filename>")
-        # parser.add_argument("--png", "-p", help="<output PNG image file name>")
-        # parser.add_argument("--pdf", "-P", help="<output PDF file name>")
-        parser.add_argument("--svg", "-s", help="<output SVG image file name>")
-        args = parser.parse_args()
-
-    output = []
-    inputfile = args.input
-    outputfile = args.svg
-
-    wavedrom = WaveDrom()
-    if not inputfile or not outputfile:
-        parser.print_help()
-    else:
-        with open(inputfile, "r") as f:
-            jinput = json.load(f)
-
-        output = wavedrom.renderWaveForm(0, jinput)
-        # wavedrom.renderWaveForm(0, jinput, output)
-
-        # svg_output = wavedrom.convert_to_svg(output)
-        # with open(outputfile, "w") as f:
-        #     f.write(svg_output)
-        output.saveas(outputfile)
-
-
-if __name__ == "__main__":
-    main()
