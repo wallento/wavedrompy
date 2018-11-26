@@ -47,6 +47,7 @@ class WaveDrom(object):
         "path": svgwrite.path.Path,
         "text": svgwrite.text.Text,
         "tspan": svgwrite.text.TSpan,
+        "title": svgwrite.base.Title,
     })
 
     def __init__(self):
