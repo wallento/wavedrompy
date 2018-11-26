@@ -1,7 +1,7 @@
 import argparse
 import json
 
-from .wavedrom import WaveDrom
+from .waveform import WaveDrom
 from .assign import Assign
 from .version import version
 from .bitfield import BitField
