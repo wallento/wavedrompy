@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-python $( dirname $0 )/src/wavedrom.py $1 $2 $3 $4

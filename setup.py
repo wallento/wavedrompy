@@ -67,15 +67,15 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/K4zuki/wavedrompy",  # Optional
+    url="https://github.com/wallento/wavedrompy",  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author="Aliaksei Chapyzhenka, BreizhGeek, Kazuki Yamamoto",  # Optional
+    author="Aliaksei Chapyzhenka, BreizhGeek, Kazuki Yamamoto, Stefan Wallentowitz",  # Optional
 
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email="k4zuki@github.com",  # Optional
+    author_email="k4zuki@github.com, stefan@wallentowitz.de",  # Optional
 
     # Classifiers help users find your project by categorizing it.
     #
