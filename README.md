@@ -42,7 +42,7 @@ You can either use the tool from Python:
     
 This will render a waveform as:
 
-![Example 1](doc/demo1.svg "Example 1")
+![Example 1](https://raw.githubusercontent.com/wallento/wavedrompy/2e8568d50561f534133d036fee3bd35756f416d9/doc/demo1.svg?sanitize=true "Example 1")
 
 You can find more examples [in the WaveDrom tutorial](https://wavedrom.com/tutorial.html).
 
@@ -62,7 +62,7 @@ A second feature is that WaveDrom can render logic circuit diagrams:
  
 This will render a as:
 
-![Example 2](doc/demo2.svg "Example 2")
+![Example 2](https://raw.githubusercontent.com/wallento/wavedrompy/2e8568d50561f534133d036fee3bd35756f416d9/doc/demo2.svg?sanitize=true "Example 2")
 
 You can find more examples [in the WaveDrom tutorial2](https://wavedrom.com/tutorial2.html).
 
@@ -82,9 +82,9 @@ Finally, wavedrom can draw registers as bitfields:
     svg.saveas("demo3.svg")
 
     
-This will render a as:
+This will render as:
 
-![Example 3](doc/demo3.svg "Example 3")
+![Example 3](https://raw.githubusercontent.com/wallento/wavedrompy/2e8568d50561f534133d036fee3bd35756f416d9/doc/demo3.svg?sanitize=true "Example 3")
 
 This mode is documented as part of the [bit-field](https://www.npmjs.com/package/bit-field) JavaScript package.
 
