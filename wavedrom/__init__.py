@@ -7,12 +7,12 @@ from .version import version
 from .bitfield import BitField
 
 
-def render(index=0, source="", output=[]):
+def render(source="", output=[]):
     source = json.loads(source)
     if source.get("signal"):
-        return WaveDrom().renderWaveForm(index, source, output)
+        return WaveDrom().renderWaveForm(0, source, output)
     elif source.get("assign"):
-        return Assign().render(index, source, output)
+        return Assign().render(0, source, output)
     elif source.get("reg"):
         return BitField().renderJson(source)
 
@@ -34,5 +34,5 @@ def main(args=None):
         with open(inputfile, "r") as f:
             jinput = f.read()
 
-        output = render(0, jinput)
+        output = render(jinput)
         output.saveas(outputfile)

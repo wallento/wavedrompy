@@ -9,6 +9,6 @@ def make_test():
         with open(inputfile, "r") as f:
             jinput = f.read()
 
-        output = render(0, jinput)
+        output = render(jinput)
 
     return _make_test
