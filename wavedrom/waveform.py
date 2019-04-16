@@ -389,7 +389,7 @@ class WaveDrom(SVGBase):
 
             for i in range(length):
                 tmp = L[i]
-                tmark = self.element.text("", x=[i * dx + x], y=[y], text_anchor="middle")
+                tmark = self.element.text(tmp, x=[i * dx + x], y=[y], text_anchor="middle")
                 tmark["class"] = "muted"
                 tmark["xml:space"] = "preserve"
                 g.add(tmark)
