@@ -282,32 +282,10 @@ class WaveDrom(SVGBase):
                 dy = self.lane.y0 + j * self.lane.yo
                 g = self.container.g(id="wavelane_{j}_{index}".format(j=j, index=index))
                 g.translate(0, dy)
-                # g = [
-                #     "g",
-                #     {
-                #         # "id": "_".join(["wavelane", str(j), str(index)]),
-                #         # "transform": "".join(["translate(0,", str(self.lane.y0 + j * self.lane.yo), ")"])
-                #         "id": "wavelane_{j}_{index}".format(j=j, index=index),
-                #         "transform": "translate(0,{dy})".format(dy=dy),
-                #     }
-                # ]
-                # root.append(g)
                 title = self.element.text("", x=[self.lane.tgo], y=[self.lane.ym], text_anchor="end")
                 title.add(self.element.tspan(name))
                 title["xml:space"] = "preserve"
                 title["class"] = "info"
-                # title = [
-                #     "text",
-                #     {
-                #         "x": self.lane.tgo,
-                #         "y": self.lane.ym,
-                #         "class": "info",
-                #         "text-anchor": "end",
-                #         "xml:space": "preserve"
-                #     },
-                #     ["tspan", name]
-                # ]
-                # g.append(title)
                 g.add(title)
 
                 glengths.append(len(name) * self.font_width + self.font_width)
@@ -316,29 +294,11 @@ class WaveDrom(SVGBase):
                 xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else -2 * xoffset
                 gg = self.container.g(id="wavelane_draw_{j}_{index}".format(j=j, index=index))
                 gg.translate(xoffset * self.lane.xs, 0)
-                # gg = [
-                #     "g",
-                #     {
-                #         "id": "wavelane_draw_{j}_{index}".format(j=j, index=index),
-                #         "transform": "translate({x},0)".format(x=xoffset * self.lane.xs)
-                #     }
-                # ]
-                # g.append(gg)
 
                 if val[1]:
                     for i in range(len(val[1])):
                         b = self.container.use(href="#{}".format(val[1][i]))
                         b.translate(i * self.lane.xs)
-                        # b = [
-                        #     "use",
-                        #     {
-                        #         # "id": "use_" + str(i) + "_" + str(j) + "_" + str(index),
-                        #         "xmlns:xlink": xlinkns,
-                        #         "xlink:href": "#{}".format(val[1][i]),
-                        #         "transform": "translate({})".format(i * self.lane.xs)
-                        #     }
-                        # ]
-                        # gg.append(b)
                         gg.add(b)
 
                     if val[2] and len(val[2]):
@@ -350,17 +310,6 @@ class WaveDrom(SVGBase):
                                     title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
                                     title.add(self.element.tspan(val[2][k]))
                                     title["xml:space"] = "preserve"
-                                    # title = [
-                                    #     "text",
-                                    #     {
-                                    #         "x": int(labels[k]) * self.lane.xs + self.lane.xlabel,
-                                    #         "y": self.lane.ym,
-                                    #         "text-anchor": "middle",
-                                    #         "xml:space": "preserve"
-                                    #     },
-                                    #     ["tspan", val[2][k]]
-                                    # ]
-                                    # gg.append(title)
                                     gg.add(title)
 
                     if len(val[1]) > xmax:
@@ -390,23 +339,6 @@ class WaveDrom(SVGBase):
                                           y=[y], text_anchor="middle", fill="#000")
                 tmark["xml:space"] = "preserve"
                 [tmark.add(get_elem(e)) for e in cxt[anchor]["text"][1:]]
-                # print(cxt[anchor]["text"])  # list
-                # cxt[anchor]["text"] = ["tspan",  # [0
-                #                        ["tspan", {"class": "error h1"}, "error"],  # [1] case 1
-                #                        ["tspan", "E=mc"],  # [2] case 2
-                #                        "default",  # [3] case 3
-                #                        ]
-                # tmark = [
-                #     "text",
-                #     {
-                #         "x": float(cxt.xmax) * float(cxt.xs) / 2,
-                #         "y": y,
-                #         "text-anchor": "middle",
-                #         "fill": "#000",
-                #         "xml:space": "preserve"
-                #     }, cxt[anchor]["text"]
-                # ]
-                # g.append(tmark)
                 g.add(tmark)
 
         def ticktock(g, cxt, ref1, ref2, x, dx, y, length):
@@ -460,17 +392,6 @@ class WaveDrom(SVGBase):
                 tmark = self.element.text("", x=[i * dx + x], y=[y], text_anchor="middle")
                 tmark["class"] = "muted"
                 tmark["xml:space"] = "preserve"
-                # tmark = [
-                #     "text",
-                #     {
-                #         "x": i * dx + x,
-                #         "y": y,
-                #         "text-anchor": "middle",
-                #         "class": "muted",
-                #         "xml:space": "preserve"
-                #     }, str(tmp)
-                # ]
-                # g.append(tmark)
                 g.add(tmark)
 
         mstep = 2 * int(self.lane.hscale)
@@ -478,24 +399,13 @@ class WaveDrom(SVGBase):
         marks = int(self.lane.xmax / mstep)
         gy = len(content) * int(self.lane.yo)
 
-        # g = ["g", {"id": "gmarks_{}".format(index)}]
         g = self.container.g(id="gmarks_{}".format(index))
         root.add(g)
-        # root.insert(0, g)
 
         for i in range(marks + 1):
             gg = self.element.path(id="gmark_{i}_{index}".format(i=i, index=index),
                                    d="m {dx},0 0,{gy}".format(dx=i * mmstep, gy=gy),
                                    style="stroke:#888;stroke-width:0.5;stroke-dasharray:1,3")
-            # gg = [
-            #     "path",
-            #     {
-            #         "id":    "gmark_{i}_{index}".format(i=i, index=index),
-            #         "d":     "m {dx},0 0,{gy}".format(dx=i * mmstep, gy=gy),
-            #         "style": "stroke:#888;stroke-width:0.5;stroke-dasharray:1,3"
-            #     }
-            # ]
-            # g.append(gg)
             g.add(gg)
 
         captext(g, self.lane, "head", -33 if self.lane.yh0 else -13)
@@ -511,8 +421,6 @@ class WaveDrom(SVGBase):
         Stack = []
         Edge = AttrDict({"words": [], "frm": 0, "shape": "", "to": 0, "label": ""})
         Events = AttrDict({})
-        svgns = "http://www.w3.org/2000/svg"
-        xmlns = "http://www.w3.org/XML/1998/namespace"
 
         if source:
             for idx, val in enumerate(source):
@@ -532,9 +440,7 @@ class WaveDrom(SVGBase):
                             Events[eventname] = AttrDict({"x": str(x), "y": str(y)})
                         pos += 1
 
-            # gg = ["g", {"id": "wavearcs_{index}".format(index=index)}]
             gg = self.container.g(id="wavearcs_{index}".format(index=index))
-            # root.append(gg)
 
             const_style = AttrDict({
                 "a": "marker-end:url(#arrowhead);stroke:#0041c4;stroke-width:1;fill:none",
@@ -550,15 +456,6 @@ class WaveDrom(SVGBase):
                     Edge.shape = Edge.words[0][1:-1]
                     frm = AttrDict(Events[Edge.frm])
                     to = AttrDict(Events[Edge.to])
-                    # gmark = [
-                    #     "path",
-                    #     {
-                    #         "id": "gmark_{frm}_{to}".format(frm=Edge.frm, to=Edge.to),
-                    #         "d": "M {fx},{fy} {tx},{ty}".format(fx=frm.x, fy=frm.y, tx=to.x, ty=to.y),
-                    #         "style": "fill:none;stroke:#00F;stroke-width:1"
-                    #     }
-                    # ]
-                    # gg.append(gmark)
                     dx = float(to.x) - float(frm.x)
                     dy = float(to.y) - float(frm.y)
                     lx = (float(frm.x) + float(to.x)) / 2
@@ -662,56 +559,13 @@ class WaveDrom(SVGBase):
                             lx = float(to.x)
                         elif Edge.shape in ["|-", "|->"]:
                             lx = float(frm.x)
-                        # if Edge.shape == "-~":
-                        #     lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
-                        # if Edge.shape == "-~>":
-                        #     lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
-                        # if Edge.shape == "<-~>":
-                        #     lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.75
-                        # if Edge.shape == "~-":
-                        #     lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.25
-                        # if Edge.shape == "~->":
-                        #     lx = float(frm.x) + (float(to.x) - float(frm.x)) * 0.25
-                        # if Edge.shape == "-|":
-                        #     lx = float(to.x)
-                        # if Edge.shape == "-|>":
-                        #     lx = float(to.x)
-                        # if Edge.shape == "<-|>":
-                        #     lx = float(to.x)
-                        # if Edge.shape == "|-":
-                        #     lx = float(frm.x)
-                        # if Edge.shape == "|->":
-                        #     lx = float(frm.x)
 
                         lwidth = len(Edge.label) * self.font_width
                         label = self.element.text("", style="font-size:10px;", text_anchor="middle",
                                                   x=[int(lx)], y=[int(ly + 3)])
                         label.add(self.element.tspan(Edge.label))
-                        # label = [
-                        #     "text",
-                        #     {
-                        #         "style": "font-size:10px;",
-                        #         "text-anchor": "middle",
-                        #         "xml:space": "preserve",
-                        #         "x": int(lx),
-                        #         "y": int(ly + 3)
-                        #     },
-                        #     ["tspan", Edge.label]
-                        # ]
                         underlabel = self.element.rect(insert=(int(lx - lwidth / 2), int(ly - 5)),
                                                        size=(lwidth, 9), style="fill:#FFF;")
-                        # underlabel = [
-                        #     "rect",
-                        #     {
-                        #         "height": 9,
-                        #         "style": "fill:#FFF;",
-                        #         "width": lwidth,
-                        #         "x": int(lx - lwidth / 2),
-                        #         "y": int(ly - 5)
-                        #     }
-                        # ]
-                        # gg.append(underlabel)
-                        # gg.append(label)
                         gg.add(underlabel)
                         gg.add(label)
 
@@ -723,37 +577,14 @@ class WaveDrom(SVGBase):
                         ly = int(Events[k].y) - 4
                         underlabel = self.element.rect(insert=(lx, ly),
                                                        size=(lwidth, 8), style="fill:#FFF;")
-                        # underlabel = [
-                        #     "rect",
-                        #     {
-                        #         "x": lx,
-                        #         "y": ly,
-                        #         "height": 8,
-                        #         "width": lwidth,
-                        #         "style": "fill:#FFF;"
-                        #     }
-                        # ]
-                        # gg.append(underlabel)
                         gg.add(underlabel)
                         lx = int(Events[k].x)
                         ly = int(Events[k].y) + 2
                         label = self.element.text(k, style="font-size:8px;", text_anchor="middle",
                                                   x=[lx], y=[ly])
-                        # label = [
-                        #     "text",
-                        #     {
-                        #         "style": "font-size:8px;",
-                        #         "x": lx,
-                        #         "y": ly,
-                        #         # "width": lwidth,
-                        #         "text-anchor": "middle"
-                        #     },
-                        #     k
-                        # ]
-                        # gg.append(label)
                         gg.add(label)
+
             root.add(gg)
-            # return root
 
     def parseConfig(self, source={}):
         """
@@ -958,11 +789,8 @@ class WaveDrom(SVGBase):
         """
 
         xmax = 0
-        root = []
-        groups = []
 
         if source.get("signal"):
-            # self.insertSVGTemplate(index, output, source)
             template = self.anotherTemplate(index, source)
             waves = template.g(id="waves_{index}".format(index=index))
             lanes = template.g(id="lanes_{index}".format(index=index))
@@ -982,30 +810,17 @@ class WaveDrom(SVGBase):
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
             height = len(content) * self.lane.yo + self.lane.yh0 + self.lane.yh1 + self.lane.yf0 + self.lane.yf1
-            # output[1] = {
-            #     "id": "svgcontent_{}".format(index),
-            #     "xmlns": "http://www.w3.org/2000/svg",
-            #     "xmlns:xlink": "http://www.w3.org/1999/xlink",
-            #     "width": str(width),
-            #     "height": str(height),
-            #     "viewBox": "0 0 {w} {h}".format(w=width, h=height),
-            #     "overflow": "hidden"
-            # }
             template["width"] = width
             template["height"] = height
             template.viewbox(0, 0, width, height)
             dx = self.lane.xg + 0.5
             dy = float(self.lane.yh0) + float(self.lane.yh1)
             lanes.translate(dx, dy)
-            # output[-1][2][1]["transform"] = "translate({dx},{dy})".format(dx=dx, dy=dy)
 
             waves.add(lanes)
             waves.add(groups)
             template.add(waves)
             return template
-
-        # output[-1][2].extend(root)
-        # output[-1][3].extend(groups)
 
     def renderGroups(self, root=[], groups=[], index=0):
 
@@ -1019,17 +834,7 @@ class WaveDrom(SVGBase):
             group = self.element.path(id="group_{i}_{index}".format(i=i, index=index),
                                       d="m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h}".format(dx=dx, dy=dy, h=h),
                                       style="stroke:#0041c4;stroke-width:1;fill:none")
-            # group = [
-            #     "path",
-            #     {
-            #         # "id": "group_" + str(i) + "_" + str(index),
-            #         # "d": "m " + str(groups[i]["x"] + 0.5) + "," + str(groups[i]["y"] * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1) + " c -3,0 -5,2 -5,5 l 0," + str(int(groups[i]["height"] * self.lane.yo - 16)) + " c 0,3 2,5 5,5",
-            #         "id": "group_{i}_{index}".format(i=i, index=index),
-            #         "d": "m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h}".format(dx=dx, dy=dy, h=h),
-            #         "style": "stroke:#0041c4;stroke-width:1;fill:none"
-            #     }
-            # ]
-            # root.append(group)
+
             root.add(group)
 
             name = groups[i]["name"]
@@ -1046,22 +851,6 @@ class WaveDrom(SVGBase):
             t.add(self.element.tspan(name))
             gg.add(t)
             label.add(gg)
-            # label = [
-            #     ["g",
-            #      # {"transform": "translate(" + x + "," + y + ")"},
-            #      {"transform": "translate({x},{y})".format(x=x, y=y)},
-            #      ["g", {"transform": "rotate(270)"},
-            #       "text",
-            #       {
-            #          "text-anchor": "middle",
-            #          "class": "info",
-            #          "xml:space": "preserve"
-            #      },
-            #          ["tspan", name]
-            #      ]
-            #      ]
-            # ]
-            # root.append(label)
             root.add(label)
 
     def renderGaps(self, root, source, index):
@@ -1111,10 +900,7 @@ class WaveDrom(SVGBase):
                             b.translate(dx)
                             g.add(b)
                 gg.add(g)
-
-            # root.append(gg)
             root.add(gg)
-            # return root
 
     def is_type_str(self, var):
         if sys.version_info[0] < 3:
