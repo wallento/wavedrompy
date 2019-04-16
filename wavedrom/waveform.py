@@ -32,7 +32,7 @@ from attrdict import AttrDict
 
 from . import waveskin, css
 from .base import SVGBase
-
+import re
 
 class WaveDrom(SVGBase):
     def __init__(self):
@@ -414,11 +414,57 @@ class WaveDrom(SVGBase):
         ticktock(g, self.lane, "head", "tock", mmstep / 2, mmstep,      -5, marks)
         ticktock(g, self.lane, "foot", "tick",          0, mmstep, gy + 15, marks + 1)
         ticktock(g, self.lane, "foot", "tock", mmstep / 2, mmstep, gy + 15, marks)
-        return g
+
+
+    def renderLabels(self, root, source, index):
+        if source:
+            gg = self.container.g(id="labels_{index}".format(index=index))
+
+            for idx, val in enumerate(source):
+                self.lane.period = val.get("period", 1)
+                self.lane.phase = int(val.get("phase", 0) * 2)
+
+                dy = self.lane.y0 + idx * self.lane.yo
+                g = self.container.g(id="labels_{i}_{index}".format(i=idx, index=index))
+                g.translate(0, dy)
+
+                label = val.get("label")
+                if label:
+                    pos = 0
+                    for l in re.findall("([\.\w]|(?:\{\w+\}))(?:\((\d*\.?\d+)\))?", label):
+                        if l[0] == ".":
+                            pos += 1
+                            continue
+
+                        text = l[0]
+                        try:
+                            offset = float(l[1])
+                        except ValueError:
+                            offset = 0
+
+                        m = re.match("\{(\w+)\}", l[0])
+                        if m:
+                            text = m.group(1)
+                        x = int(float(self.lane.xs) * (2 * (pos + offset) * self.lane.period *
+                                                       self.lane.hscale - self.lane.phase) + float(self.lane.xlabel))
+                        y = int(idx * self.lane.yo + self.lane.y0 + float(self.lane.ys) * 0.5) - dy
+
+                        lwidth = len(text) * self.font_width
+                        lx = float(x) - float(lwidth) / 2
+                        ly = int(y) - 5
+                        underlabel = self.element.rect(insert=(lx, ly),
+                                                       size=(lwidth, 8), style="fill:#FFF;")
+                        g.add(underlabel)
+                        lx = float(x)
+                        ly = int(y) + 2
+                        label = self.element.text(text, style="font-size:8px;", text_anchor="middle",
+                                                  x=[lx], y=[ly])
+                        g.add(label)
+                        pos += 1
+                gg.add(g)
+            root.add(gg)
 
     def renderArcs(self, root, source, index, top):
-
-        Stack = []
         Edge = AttrDict({"words": [], "frm": 0, "shape": "", "to": 0, "label": ""})
         Events = AttrDict({})
 
@@ -802,10 +848,10 @@ class WaveDrom(SVGBase):
             glengths = self.renderWaveLane(lanes, content, index)
             for i, val in enumerate(glengths):
                 xmax = max(xmax, (val + ret.width[i]))
-            # self.renderMarks(root, content, index)
-            marks = self.renderMarks(lanes, content, index)
-            self.renderArcs(lanes, ret.lanes, index, source)
+            self.renderMarks(lanes, content, index)
             self.renderGaps(lanes, ret.lanes, index)
+            self.renderLabels(lanes, ret.lanes, index)
+            self.renderArcs(lanes, ret.lanes, index, source)
             self.renderGroups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
