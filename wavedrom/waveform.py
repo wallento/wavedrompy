@@ -208,6 +208,8 @@ class WaveDrom(SVGBase):
                     Next = Top
             if Next == '>':
                 subCycle = False
+                if len(Stack) > 0:
+                    Next = Stack.pop()
             Repeats = 1
             while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
                 Stack.pop()
