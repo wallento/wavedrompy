@@ -183,35 +183,34 @@ class WaveDrom(SVGBase):
                 return self.genBrick([tmp1, tmp0, tmp2, x6[atext[1]]], extra, times)
 
     def parseWaveLane(self, text="", extra=""):
-
         R = []
-        Stack = text
-        Next = Stack[0]
-        Stack = Stack[1:]
+
+        Stack = list(text)
+        Stack.reverse()
+
+        Next = Stack.pop()
         subCycle = False
 
         Repeats = 1
-        while len(Stack) and (Stack[0] in [".", "|"]):  # repeaters parser
-            Stack = Stack[1:]
+        while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
+            Stack.pop()
             Repeats += 1
 
         R.extend(self.genFirstWaveBrick(Next, extra, Repeats))
 
-        while len(Stack):
+        while len(Stack) > 0:
             Top = Next
-            Next = Stack[0]
-            Stack = Stack[1:]
+            Next = Stack.pop()
             if Next == '<':
                 subCycle = True
-                Next = Stack[0]
-                Stack = Stack[1:]
+                Next = Stack.pop()
+                if Next == '.':
+                    Next = Top
             if Next == '>':
                 subCycle = False
-                Next = Stack[0]
-                Stack = Stack[1:]
             Repeats = 1
-            while len(Stack) and (Stack[0] in [".", "|"]):  # repeaters parser
-                Stack = Stack[1:]
+            while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
+                Stack.pop()
                 Repeats += 1
             if subCycle:
                 R.extend(self.genWaveBrick((Top + Next), 0, Repeats - self.lane.period))
@@ -900,11 +899,6 @@ class WaveDrom(SVGBase):
             root.add(label)
 
     def renderGaps(self, root, source, index):
-
-        Stack = []
-        svgns = "http://www.w3.org/2000/svg",
-        xlinkns = "http://www.w3.org/1999/xlink"
-
         if source:
 
             gg = self.container.g(id="wavegaps_{index}".format(index=index))
@@ -920,19 +914,17 @@ class WaveDrom(SVGBase):
 
                 if val.get("wave"):
                     text = val["wave"]
-                    Stack = text
+                    Stack = list(text)
+                    Stack.reverse()
                     pos = 0
                     while len(Stack):
-                        next = Stack[0]
-                        Stack = Stack[1:]
+                        next = Stack.pop()
                         if next == '<':
                             subCycle = True
-                            next = Stack[0]
-                            Stack = Stack[1:]
+                            next = Stack.pop()
                         if next == '>':
                             subCycle = False
-                            next = Stack[0]
-                            Stack = Stack[1:]
+                            next = Stack.pop()
                         if subCycle:
                             pos += 1
                         else:
