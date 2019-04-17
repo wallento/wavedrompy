@@ -165,8 +165,12 @@ class WaveDrom(SVGBase):
                     # unknown
                     return self.genBrick(["xxx"], extra, times)
 
-                # soft curves
-                return self.genBrick([tmp3 + "m" + tmp2 + y2[atext[0]] + x3[atext[1]], tmp0], extra, times)
+                if tmp3 == tmp2:
+                    # No transition actually
+                    return self.genBrick([tmp3 + tmp2 + tmp2 + y2[atext[0]] + x3[atext[1]], tmp0], extra, times)
+                else:
+                    # soft curves
+                    return self.genBrick([tmp3 + "m" + tmp2 + y2[atext[0]] + x3[atext[1]], tmp0], extra, times)
 
         else:
             tmp4 = xclude.get(text)
@@ -188,43 +192,48 @@ class WaveDrom(SVGBase):
         Stack = list(text)
         Stack.reverse()
 
-        Next = Stack.pop()
+        This = None
         subCycle = False
 
-        Repeats = 1
-        while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
-            Stack.pop()
-            Repeats += 1
-
-        R.extend(self.genFirstWaveBrick(Next, extra, Repeats))
 
         while len(Stack) > 0:
-            Top = Next
-            Next = Stack.pop()
-            if Next == '<':
+            Top = This
+            This = Stack.pop()
+            if This == '<':
                 subCycle = True
-                Next = Stack.pop()
-                if Next == '.':
-                    Next = Top
-            if Next == '>':
+                if Stack[-1] != '.':
+                    This = Stack.pop()
+                else:
+                    This = Top
+            if This == '>':
                 subCycle = False
                 if len(Stack) > 0:
-                    Next = Stack.pop()
+                    if Stack[-1] == '<':
+                        subCycle = True
+                        This = Top
+                        continue
+                    else:
+                        This = Stack.pop()
             Repeats = 1
             while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
                 Stack.pop()
                 Repeats += 1
             if subCycle:
-                R.extend(self.genWaveBrick((Top + Next), 0, Repeats - self.lane.period))
+                if Top is None:
+                    R.extend(self.genFirstWaveBrick(This, 0, Repeats))
+                else:
+                    R.extend(self.genWaveBrick((Top + This), 0, Repeats - self.lane.period))
             else:
-                R.extend(self.genWaveBrick((Top + Next), extra, Repeats))
+                if Top is None:
+                    R.extend(self.genFirstWaveBrick(This, extra, Repeats))
+                else:
+                    R.extend(self.genWaveBrick((Top + This), extra, Repeats))
 
         for i in range(self.lane.phase):
             R = R[1:]
         return R
 
     def parseWaveLanes(self, sig=""):
-
         def data_extract(e):
             tmp = e.get("data")
             if tmp is not None:
@@ -926,7 +935,8 @@ class WaveDrom(SVGBase):
                             next = Stack.pop()
                         if next == '>':
                             subCycle = False
-                            next = Stack.pop()
+                            if len(Stack) > 0:
+                                next = Stack.pop()
                         if subCycle:
                             pos += 1
                         else:
