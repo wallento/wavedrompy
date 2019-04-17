@@ -484,17 +484,24 @@ class WaveDrom(SVGBase):
                 self.lane.phase = int(val.get("phase", 0) * 2)
                 text = val.get("node")
                 if text:
-                    Stack = text
+                    Stack = list(text)
+                    Stack.reverse()
                     pos = 0
-                    while len(Stack):
-                        eventname = Stack[0]
-                        Stack = Stack[1:]
+                    step = 1
+                    while len(Stack) > 0:
+                        eventname = Stack.pop()
+                        if eventname == "<":
+                            step = 0.25
+                            continue
+                        elif eventname == ">":
+                            step = 1
+                            continue
                         x = int(float(self.lane.xs) * (2 * pos * self.lane.period *
                                                        self.lane.hscale - self.lane.phase) + float(self.lane.xlabel))
                         y = int(idx * self.lane.yo + self.lane.y0 + float(self.lane.ys) * 0.5)
                         if eventname != ".":
                             Events[eventname] = AttrDict({"x": str(x), "y": str(y)})
-                        pos += 1
+                        pos += step
 
             gg = self.container.g(id="wavearcs_{index}".format(index=index))
 
