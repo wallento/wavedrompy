@@ -109,7 +109,7 @@ class WaveDrom(SVGBase):
                 wave = [first] + [level.get(this, this)*3]*(2 * repeat + 1)
         else:
             if prev is None:
-                transition = level.get(this, this)*3
+                transition = level.get(this, this)*3 + data.get(this, "")
             else:
                 transition = level.get(prev, prev) + 'm' + level.get(this, this) + data.get(prev, "") + data.get(this, "")
             value = level.get(this, this)*3 + data.get(this, "")
