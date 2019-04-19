@@ -86,7 +86,8 @@ class WaveDrom(SVGBase):
     def genWaveBrick(self, prev=None, this=None, stretch=0, repeat=0, subcycle=False):
         sharpedge_clk = { "p": "pclk", "n": "nclk", "P": "Pclk", "N": "Nclk" }
         sharpedge_sig = { "h": "pclk", "l": "nclk", "H": "Pclk", "L": "Nclk" }
-        sharpedge = {**sharpedge_clk, **sharpedge_sig}
+        sharpedge = sharpedge_clk.copy()
+        sharpedge.update(sharpedge_sig)
 
         level = {"=": "v", "2": "v", "3": "v", "4": "v", "5": "v", "h": "1", "H": "1", "l": "0", "L": "0"}
         data = {"=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
