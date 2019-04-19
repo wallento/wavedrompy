@@ -283,9 +283,7 @@ class WaveDrom(SVGBase):
         xmax = 0
         xgmax = 0
         glengths = []
-        svgns = "http://www.w3.org/2000/svg"
-        xlinkns = "http://www.w3.org/1999/xlink"
-        xmlns = "http://www.w3.org/XML/1998/namespace"
+
         for j, val in enumerate(content):
             name = val[0][0]
             if name:  # check name
