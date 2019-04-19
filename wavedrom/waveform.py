@@ -441,7 +441,7 @@ class WaveDrom(SVGBase):
                 label = val.get("label")
                 if label:
                     pos = 0
-                    for l in re.findall("([\.\w]|(?:\{\w+\}))(?:\((\d*\.?\d+)\))?", label):
+                    for l in re.findall(r"([\.\w]|(?:\{\w+\}))(?:\((\d*\.?\d+)\))?", label):
                         if l[0] == ".":
                             pos += 1
                             continue
@@ -452,7 +452,7 @@ class WaveDrom(SVGBase):
                         except ValueError:
                             offset = 0
 
-                        m = re.match("\{(\w+)\}", l[0])
+                        m = re.match(r"\{(\w+)\}", l[0])
                         if m:
                             text = m.group(1)
                         x = int(float(self.lane.xs) * (2 * (pos + offset) * self.lane.period *
