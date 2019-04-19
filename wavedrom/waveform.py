@@ -867,7 +867,7 @@ class WaveDrom(SVGBase):
                             if len(Stack) > 0:
                                 next = Stack.pop()
                         if subCycle:
-                            pos += 1
+                            pos += self.lane.period
                         else:
                             pos += 2 * self.lane.period
                         if next == "|":
