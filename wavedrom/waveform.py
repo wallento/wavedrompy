@@ -27,8 +27,11 @@
 
 import sys
 import math
+from itertools import chain
+
 import svgwrite
 from attrdict import AttrDict
+from collections import deque
 
 from . import waveskin, css
 from .base import SVGBase
@@ -58,179 +61,100 @@ class WaveDrom(SVGBase):
             "foot": {}
         })
 
-    def genBrick(self, texts="", extra="", times=""):
-
-        R = []
-        if len(texts) == 4:
-            for j in range(times):
-
-                R.append(texts[0])
-
-                for i in range(extra):
-                    R.append(texts[1])
-
-                R.append(texts[2])
-                for i in range(extra):
-                    R.append(texts[3])
-
-            return R
-
-        if len(texts) == 1:
-            texts.append(texts[0])
-
-        R.append(texts[0])
-        for i in range(times * (2 * (extra + 1)) - 1):
-            R.append(texts[1])
-        return R
-
-    def genFirstWaveBrick(self, text="", extra="", times=""):
-
-        pattern = {
-            "p": ["pclk", "111", "nclk", "000"],
-            "n": ["nclk", "000", "pclk", "111"],
-            "P": ["Pclk", "111", "nclk", "000"],
-            "N": ["Nclk", "000", "pclk", "111"],
-            "l": ["000"],
-            "L": ["000"],
-            "0": ["000"],
-            "h": ["111"],
-            "H": ["111"],
-            "1": ["111"],
-            "=": ["vvv-2"],
-            "2": ["vvv-2"],
-            "3": ["vvv-3"],
-            "4": ["vvv-4"],
-            "5": ["vvv-5"],
-            "d": ["ddd"],
-            "u": ["uuu"],
-            "z": ["zzz"]
-        }
-
-        return self.genBrick(pattern.get(text,  ["xxx"]), extra, times)
-
-    def genWaveBrick(self, text="", extra="", times=""):
-
-        x1 = {"p": "pclk", "n": "nclk",
-              "P": "Pclk", "N": "Nclk",
-              "h": "pclk", "l": "nclk",
-              "H": "Pclk", "L": "Nclk"}
-        x2 = {"0": "0", "1": "1", "x": "x", "d": "d", "u": "u", "z": "z",
-              "=": "v",  "2": "v",  "3": "v",  "4": "v",  "5": "v"}
-        x3 = {"0": "", "1": "", "x": "", "d": "", "u": "", "z": "",
-              "=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
-        y1 = {
-            "p": "0", "n": "1",
-            "P": "0", "N": "1",
-            "h": "1", "l": "0",
-            "H": "1", "L": "0",
-            "0": "0", "1": "1",
-            "x": "x", "d": "d", "u": "u", "z": "z",
-            "=": "v", "2": "v", "3": "v", "4": "v", "5": "v"}
-
-        y2 = {
-            "p": "", "n": "",
-            "P": "", "N": "",
-            "h": "", "l": "",
-            "H": "", "L": "",
-            "0": "", "1": "",
-            "x": "", "d": "", "u": "", "z": "",
-            "=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
-
-        x4 = {
-            "p": "111", "n": "000",
-            "P": "111", "N": "000",
-            "h": "111", "l": "000",
-            "H": "111", "L": "000",
+    def stretchBricks(self, wave, stretch):
+        stretcher = {
+            "Pclk": "111", "Nclk": "000",
+            "pclk": "111", "nclk": "000",
             "0": "000", "1": "111", "x": "xxx", "d": "ddd", "u": "uuu", "z": "zzz",
-            "=": "vvv-2", "2": "vvv-2", "3": "vvv-3", "4": "vvv-4", "5": "vvv-5"}
+            "2": "vvv-2", "3": "vvv-3", "4": "vvv-4", "5": "vvv-5"}
 
-        x5 = {"p": "nclk", "n": "pclk", "P": "nclk", "N": "pclk"}
-        x6 = {"p": "000", "n": "111", "P": "000", "N": "111"}
+        stretch = int(stretch)
+
+        def getBrick(w):
+            if w in stretcher:
+                return stretcher[w]
+            elif w[2] in stretcher:
+                return stretcher[w[2]]
+            else:
+                return stretcher[w[-1]]
+
+        if stretch > 0:
+            return list(chain.from_iterable(([w] + [getBrick(w)]*stretch for w in wave)))
+        else:
+            return wave
+
+    def genWaveBrick(self, prev=None, this=None, stretch=0, repeat=0, subcycle=False):
+        sharpedge_clk = { "p": "pclk", "n": "nclk", "P": "Pclk", "N": "Nclk" }
+        sharpedge_sig = { "h": "pclk", "l": "nclk", "H": "Pclk", "L": "Nclk" }
+        sharpedge = {**sharpedge_clk, **sharpedge_sig}
+
+        level = {"=": "v", "2": "v", "3": "v", "4": "v", "5": "v", "h": "1", "H": "1", "l": "0", "L": "0"}
+        data = {"=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
+        clkinvert = {"p": "nclk", "n": "pclk", "P": "nclk", "N": "pclk"}
         xclude = {"hp": "111", "Hp": "111", "ln": "000", "Ln": "000",
                   "nh": "111", "Nh": "111", "pl": "000", "Pl": "000"}
 
-        # atext = text.split()
-        atext = text
-
-        tmp0 = x4.get(atext[1])
-        tmp1 = x1.get(atext[1])
-        if tmp1 is None:
-            tmp2 = x2.get(atext[1])
-            if tmp2 is None:
-                # unknown
-                return self.genBrick(["xxx"], extra, times)
-            else:
-                tmp3 = y1.get(atext[0])
-                if tmp3 is None:
-                    # unknown
-                    return self.genBrick(["xxx"], extra, times)
-
-                if tmp3 == tmp2:
-                    # No transition actually
-                    return self.genBrick([tmp3 + tmp2 + tmp2 + y2[atext[0]] + x3[atext[1]], tmp0], extra, times)
+        if this in sharpedge.keys():
+            if prev is None:
+                if this in sharpedge_clk.keys():
+                    first = sharpedge[this]
                 else:
-                    # soft curves
-                    return self.genBrick([tmp3 + "m" + tmp2 + y2[atext[0]] + x3[atext[1]], tmp0], extra, times)
-
-        else:
-            tmp4 = xclude.get(text)
-            if tmp4 is not None:
-                tmp1 = tmp4
-
-            # sharp curves
-            tmp2 = x5.get(atext[1])
-            if tmp2 is None:
-                # hlHL
-                return self.genBrick([tmp1, tmp0], extra, times)
+                    first = level.get(this, this)*3
             else:
-                # pnPN
-                return self.genBrick([tmp1, tmp0, tmp2, x6[atext[1]]], extra, times)
+                first = xclude.get(prev+this, sharpedge[this])
 
-    def parseWaveLane(self, text="", extra=""):
+            if this in sharpedge_clk.keys():
+                wave = [first, clkinvert[this]] * (1 + repeat)
+            else:
+                wave = [first] + [level.get(this, this)*3]*(2 * repeat + 1)
+        else:
+            if prev is None:
+                transition = level.get(this, this)*3
+            else:
+                transition = level.get(prev, prev) + 'm' + level.get(this, this) + data.get(prev, "") + data.get(this, "")
+            value = level.get(this, this)*3 + data.get(this, "")
+            wave = [transition, value] + [value, value] * repeat
+
+        if subcycle:
+            wave = wave[0:repeat+1]
+
+        wave = self.stretchBricks(wave, stretch)
+
+        return wave
+
+
+    def parseWaveLane(self, text, stretch=0):
         R = []
 
-        Stack = list(text)
-        Stack.reverse()
+        Stack = deque(text)
 
         This = None
         subCycle = False
 
-
         while len(Stack) > 0:
             Top = This
-            This = Stack.pop()
+            This = Stack.popleft()
+            repeat = 0
             if This == '<':
                 subCycle = True
-                if Stack[-1] != '.':
-                    This = Stack.pop()
-                else:
-                    This = Top
+                This = Top
+                Top = None
+                if Stack[0] not in ['.', '|', '/']:
+                    continue
             if This == '>':
                 subCycle = False
-                if len(Stack) > 0:
-                    if Stack[-1] == '<':
-                        subCycle = True
-                        This = Top
-                        continue
-                    else:
-                        This = Stack.pop()
-            Repeats = 1
-            while len(Stack) and (Stack[-1] in [".", "|"]):  # repeaters parser
-                Stack.pop()
-                Repeats += 1
-            if subCycle:
-                if Top is None:
-                    R.extend(self.genFirstWaveBrick(This, 0, Repeats))
-                else:
-                    R.extend(self.genWaveBrick((Top + This), 0, Repeats - self.lane.period))
-            else:
-                if Top is None:
-                    R.extend(self.genFirstWaveBrick(This, extra, Repeats))
-                else:
-                    R.extend(self.genWaveBrick((Top + This), extra, Repeats))
+                This = Top
+                Top = None
+                if not Stack or Stack[0] not in ['.', '|']:
+                    continue
+            while Stack and Stack[0] in ['.', '|']:
+                Stack.popleft()
+                repeat += 1
+            R.extend(self.genWaveBrick(Top, This, stretch, repeat, subCycle))
 
         for i in range(self.lane.phase):
             R = R[1:]
+
         return R
 
     def parseWaveLanes(self, sig=""):
