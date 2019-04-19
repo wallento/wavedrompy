@@ -48,7 +48,21 @@ subcycle = [
     Regression(wave="<x0>1x", expected=['xxx', 'xm0', '0m1', '111', '1mx', 'xxx']),
     Regression(wave="<01>", expected=['000', '0m1']),
     Regression(wave="x.<01...0>x", expected=['xxx', 'xxx', 'xxx', 'xxx', 'xm0', '0m1', '111', '111', '111', '1m0',
-                                             '0mx', 'xxx'])
+                                             '0mx', 'xxx']),
+    Regression(wave="==2<30>2<0xx1>2333444555",
+               expected=['vvv-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vmv-2-3', 'vm0-3', '0mv-2', 'vvv-2',
+                         'vm0-2', '0mx', 'xmx', 'xm1', '1mv-2', 'vvv-2', 'vmv-2-3', 'vvv-3', 'vmv-3-3', 'vvv-3',
+                         'vmv-3-3', 'vvv-3', 'vmv-3-4', 'vvv-4', 'vmv-4-4', 'vvv-4', 'vmv-4-4', 'vvv-4', 'vmv-4-5',
+                         'vvv-5', 'vmv-5-5', 'vvv-5', 'vmv-5-5', 'vvv-5']),
+    Regression(wave="=2<15.1>2<01>2355",
+               expected=['vvv-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vm1-2', '1mv-5', 'vvv-5', 'vm1-5', '1mv-2', 'vvv-2',
+                         'vm0-2', '0m1', '1mv-2', 'vvv-2', 'vmv-2-3', 'vvv-3', 'vmv-3-5', 'vvv-5', 'vmv-5-5', 'vvv-5']),
+    Regression(wave="=2<1001.1>2<01.5>3",
+               expected=['vvv-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vm1-2', '1m0', '0m0', '0m1', '111', '1m1', '1mv-2',
+                         'vvv-2', 'vm0-2', '0m1', '111', '1mv-5', 'vmv-5-3', 'vvv-3']),
+    Regression(wave="=2<10zuzd1x.1>2",
+               expected=['vvv-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vm1-2', '1m0', '0mz', 'zmu', 'umz', 'zmd', 'dm1', '1mx',
+                         'xxx', 'xm1', '1mv-2', 'vvv-2']),
 ]
 
 all = basic + subcycle
