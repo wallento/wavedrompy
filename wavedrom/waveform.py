@@ -140,13 +140,17 @@ class WaveDrom(SVGBase):
                 subCycle = True
                 This = Top
                 Top = None
-                if Stack[0] not in ['.', '|', '/']:
+                if Stack[0] in ['.', '|']:
+                    Stack.popleft()
+                else:
                     continue
             if This == '>':
                 subCycle = False
                 This = Top
                 Top = None
-                if not Stack or Stack[0] not in ['.', '|']:
+                if Stack and Stack[0] in ['.', '|']:
+                    Stack.popleft()
+                else:
                     continue
             while Stack and Stack[0] in ['.', '|']:
                 Stack.popleft()

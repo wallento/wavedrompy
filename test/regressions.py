@@ -63,6 +63,9 @@ subcycle = [
     Regression(wave="=2<10zuzd1x.1>2",
                expected=['vvv-2', 'vvv-2', 'vmv-2-2', 'vvv-2', 'vm1-2', '1m0', '0mz', 'zmu', 'umz', 'zmd', 'dm1', '1mx',
                          'xxx', 'xm1', '1mv-2', 'vvv-2']),
+    Regression(wave="<=|>.x", expected=['vvv-2', 'vvv-2', 'vvv-2', 'vvv-2', 'vmx-2', 'xxx']),
+    Regression(wave="x<=|>.x", expected=['xxx', 'xxx', 'xmv-2', 'vvv-2', 'vvv-2', 'vvv-2', 'vmx-2', 'xxx']),
+    Regression(wave="x<.|>0x", expected=['xxx', 'xxx', 'xxx', 'xxx', 'xm0', '000', '0mx', 'xxx']),
 ]
 
 all = basic + subcycle
