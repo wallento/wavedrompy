@@ -859,18 +859,16 @@ class WaveDrom(SVGBase):
 
                 if val.get("wave"):
                     text = val["wave"]
-                    Stack = list(text)
-                    Stack.reverse()
+                    Stack = deque(text)
                     pos = 0
                     while len(Stack):
-                        next = Stack.pop()
+                        next = Stack.popleft()
                         if next == '<':
                             subCycle = True
-                            next = Stack.pop()
+                            continue
                         if next == '>':
                             subCycle = False
-                            if len(Stack) > 0:
-                                next = Stack.pop()
+                            continue
                         if subCycle:
                             pos += self.lane.period
                         else:
