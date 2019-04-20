@@ -21,25 +21,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-# Translated to Python from original file:
+# Originally translated to Python from original file:
 # https://github.com/drom/wavedrom/blob/master/src/WaveDrom.js
-#
+# Now many parts have been rewritten and diverged
 
 import sys
 import math
+import re
 from itertools import chain
-
 import svgwrite
 from attrdict import AttrDict
 from collections import deque
 
 from . import waveskin, css
 from .base import SVGBase
-import re
+
 
 class WaveDrom(SVGBase):
     def __init__(self):
-
         self.font_width = 7
         self.lane = AttrDict({
             "xs": 20,    # tmpgraphlane0.width
@@ -61,7 +60,8 @@ class WaveDrom(SVGBase):
             "foot": {}
         })
 
-    def stretchBricks(self, wave, stretch):
+    @staticmethod
+    def stretch_bricks(wave, stretch):
         stretcher = {
             "Pclk": "111", "Nclk": "000",
             "pclk": "111", "nclk": "000",
@@ -83,7 +83,7 @@ class WaveDrom(SVGBase):
         else:
             return wave
 
-    def genWaveBrick(self, prev=None, this=None, stretch=0, repeat=0, subcycle=False):
+    def gen_wave_brick(self, prev=None, this=None, stretch=0, repeat=0, subcycle=False):
         sharpedge_clk = { "p": "pclk", "n": "nclk", "P": "Pclk", "N": "Nclk" }
         sharpedge_sig = { "h": "pclk", "l": "nclk", "H": "Pclk", "L": "Nclk" }
         sharpedge = sharpedge_clk.copy()
@@ -119,12 +119,11 @@ class WaveDrom(SVGBase):
         if subcycle:
             wave = wave[0:repeat+1]
 
-        wave = self.stretchBricks(wave, stretch)
+        wave = self.stretch_bricks(wave, stretch)
 
         return wave
 
-
-    def parseWaveLane(self, text, stretch=0):
+    def parse_wave_lane(self, text, stretch=0):
         R = []
 
         Stack = deque(text)
@@ -155,14 +154,14 @@ class WaveDrom(SVGBase):
             while Stack and Stack[0] in ['.', '|']:
                 Stack.popleft()
                 repeat += 1
-            R.extend(self.genWaveBrick(Top, This, stretch, repeat, subCycle))
+            R.extend(self.gen_wave_brick(Top, This, stretch, repeat, subCycle))
 
         for i in range(self.lane.phase):
             R = R[1:]
 
         return R
 
-    def parseWaveLanes(self, sig=""):
+    def parse_wave_lanes(self, sig=""):
         def data_extract(e):
             tmp = e.get("data")
             if tmp is not None:
@@ -176,7 +175,7 @@ class WaveDrom(SVGBase):
             sub_content = []
             sub_content.append([sigx.get("name", " "), sigx.get("phase", 0)])
             if sigx.get("wave"):
-                sub_content.append(self.parseWaveLane(sigx["wave"], int(self.lane.period * self.lane.hscale - 1)))
+                sub_content.append(self.parse_wave_lane(sigx["wave"], int(self.lane.period * self.lane.hscale - 1)))
             else:
                 sub_content.append(None)
             sub_content.append(data_extract(sigx))
@@ -184,7 +183,7 @@ class WaveDrom(SVGBase):
 
         return content
 
-    def findLaneMarkers(self, lanetext=""):
+    def find_lane_markers(self, lanetext=""):
 
         lcount = 0
         gcount = 0
@@ -204,11 +203,7 @@ class WaveDrom(SVGBase):
 
         return ret
 
-    def renderWaveLane(self, root=[], content="", index=0):
-        """
-        root=[]
-
-        """
+    def render_wave_lane(self, root=[], content="", index=0):
         xmax = 0
         xgmax = 0
         glengths = []
@@ -239,7 +234,7 @@ class WaveDrom(SVGBase):
                         gg.add(b)
 
                     if val[2] and len(val[2]):
-                        labels = self.findLaneMarkers(val[1])
+                        labels = self.find_lane_markers(val[1])
                         if len(labels) != 0:
                             for k in range(len(labels)):
                                 if val[2] and k < len(val[2]):
@@ -257,8 +252,7 @@ class WaveDrom(SVGBase):
         self.lane.xg = xgmax + 20
         return glengths
 
-    def renderMarks(self, root=[], content="", index=0):
-
+    def render_marks(self, root=[], content="", index=0):
         def get_elem(e):
             if len(e) == 3:
                 ret = self.element[e[0]](e[2])
@@ -352,8 +346,7 @@ class WaveDrom(SVGBase):
         ticktock(g, self.lane, "foot", "tick",          0, mmstep, gy + 15, marks + 1)
         ticktock(g, self.lane, "foot", "tock", mmstep / 2, mmstep, gy + 15, marks)
 
-
-    def renderLabels(self, root, source, index):
+    def render_labels(self, root, source, index):
         if source:
             gg = self.container.g(id="labels_{index}".format(index=index))
 
@@ -401,7 +394,7 @@ class WaveDrom(SVGBase):
                 gg.add(g)
             root.add(gg)
 
-    def renderArcs(self, root, source, index, top):
+    def render_arcs(self, root, source, index, top):
         Edge = AttrDict({"words": [], "frm": 0, "shape": "", "to": 0, "label": ""})
         Events = AttrDict({})
 
@@ -576,11 +569,7 @@ class WaveDrom(SVGBase):
 
             root.add(gg)
 
-    def parseConfig(self, source={}):
-        """
-        source = AttrDict()
-        """
-
+    def parse_config(self, source={}):
         self.lane.hscale = 1
         if self.lane.get("hscale0"):
             self.lane.hscale = self.lane.hscale0
@@ -617,29 +606,6 @@ class WaveDrom(SVGBase):
                 self.lane.foot["text"] = source["foot"]["text"]
 
     def rec(self, tmp=[], state={}):
-        """
-        tmp = source["signal"] = []
-        state = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
-        [
-          {    "name": "clk",   "wave": "p..Pp..P"},
-          ["Master",
-            ["ctrl",
-              {"name": "write", "wave": "01.0...."},
-              {"name": "read",  "wave": "0...1..0"}
-            ],
-            {  "name": "addr",  "wave": "x3.x4..x", "data": "A1 A2"},
-            {  "name": "wdata", "wave": "x3.x....", "data": "D1"   }
-          ],
-          {},
-          ["Slave",
-            ["ctrl",
-              {"name": "ack",   "wave": "x01x0.1x"}
-            ],
-            {  "name": "rdata", "wave": "x.....4x", "data": "Q2"}
-          ]
-        ]
-        """
-
         name = str(tmp[0])
         delta_x = 25
 
@@ -661,28 +627,8 @@ class WaveDrom(SVGBase):
         state.x -= delta_x
         state.name = name
 
-    def anotherTemplate(self, index, source):
+    def another_template(self, index, source):
         def get_container(elem):
-            """
-            elem = [
-            "g",   # elem[0]
-            {"id": "socket"},   # elem[1]
-            [     # elem[2]
-            "rect",   # elem[2][0]
-            {"y": "15", "x": "6", "height": "20", "width": "20"}   # elem[2][1]
-            ]
-            ]
-            ["g", {"id": "0mx"}, # elem[0:1]
-             ["path", {"d": "M3,20 9,0 20,0", "class": "s1"}], # elem[2]
-             ["path", {"d": "m20,15 -5,5", "class": "s2"}], # elem[3]
-             ["path", {"d": "M20,10 10,20", "class": "s2"}],
-             ["path", {"d": "M20,5 5,20", "class": "s2"}],
-             ["path", {"d": "M20,0 4,16", "class": "s2"}],
-             ["path", {"d": "M15,0 6,9", "class": "s2"}],
-             ["path", {"d": "M10,0 9,1", "class": "s2"}],
-             ["path", {"d": "m0,20 20,0", "class": "s1"}] # elem[9]
-             ],
-            """
             ctype = elem[0]
             ret = self.container[ctype]()
             ret.attribs = elem[1]
@@ -723,12 +669,7 @@ class WaveDrom(SVGBase):
 
         return template
 
-    def insertSVGTemplate(self, index=0, parent=[], source={}):
-        """
-        index = 0
-        parent = []
-        source = {}
-        """
+    def insert_svg_template(self, index=0, parent=[], source={}):
         e = waveskin.WaveSkin["default"]
 
         if source.get("config") and source.get("config").get("skin"):
@@ -736,8 +677,6 @@ class WaveDrom(SVGBase):
                 e = waveskin.WaveSkin[source.get("config").get("skin")]
 
         if index == 0:
-            # get unit size
-            # ["rect", {"y": "15", "x": "6", "height": "20", "width": "20"}]
             self.lane.xs = int(e[3][1][2][1]["width"])
             self.lane.ys = int(e[3][1][2][1]["height"])
             self.lane.xlabel = int(e[3][1][2][1]["x"])
@@ -771,32 +710,26 @@ class WaveDrom(SVGBase):
 
         parent.extend(e)
 
-    def renderWaveForm(self, index=0, source={}, output=[]):
-        """
-        index = 0
-        source = {}
-        output = []
-        """
-
+    def render_waveform(self, index=0, source={}, output=[]):
         xmax = 0
 
         if source.get("signal"):
-            template = self.anotherTemplate(index, source)
+            template = self.another_template(index, source)
             waves = template.g(id="waves_{index}".format(index=index))
             lanes = template.g(id="lanes_{index}".format(index=index))
             groups = template.g(id="groups_{index}".format(index=index))
-            self.parseConfig(source)
+            self.parse_config(source)
             ret = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
             self.rec(source["signal"], ret)  # parse lanes
-            content = self.parseWaveLanes(ret.lanes)
-            glengths = self.renderWaveLane(lanes, content, index)
+            content = self.parse_wave_lanes(ret.lanes)
+            glengths = self.render_wave_lane(lanes, content, index)
             for i, val in enumerate(glengths):
                 xmax = max(xmax, (val + ret.width[i]))
-            self.renderMarks(lanes, content, index)
-            self.renderGaps(lanes, ret.lanes, index)
-            self.renderLabels(lanes, ret.lanes, index)
-            self.renderArcs(lanes, ret.lanes, index, source)
-            self.renderGroups(groups, ret.groups, index)
+            self.render_marks(lanes, content, index)
+            self.render_gaps(lanes, ret.lanes, index)
+            self.render_labels(lanes, ret.lanes, index)
+            self.render_arcs(lanes, ret.lanes, index, source)
+            self.render_groups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
             height = len(content) * self.lane.yo + self.lane.yh0 + self.lane.yh1 + self.lane.yf0 + self.lane.yf1
@@ -812,11 +745,7 @@ class WaveDrom(SVGBase):
             template.add(waves)
             return template
 
-    def renderGroups(self, root=[], groups=[], index=0):
-
-        svgns = "http://www.w3.org/2000/svg",
-        xmlns = "http://www.w3.org/XML/1998/namespace"
-
+    def render_groups(self, root=[], groups=[], index=0):
         for i, val in enumerate(groups):
             dx = groups[i].x + 0.5
             dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
@@ -843,7 +772,7 @@ class WaveDrom(SVGBase):
             label.add(gg)
             root.add(label)
 
-    def renderGaps(self, root, source, index):
+    def render_gaps(self, root, source, index):
         if source:
 
             gg = self.container.g(id="wavegaps_{index}".format(index=index))
@@ -891,7 +820,6 @@ class WaveDrom(SVGBase):
             return type(var) is str
 
     def convert_to_svg(self, root):
-
         svg_output = ""
 
         if type(root) is list:
@@ -920,3 +848,20 @@ class WaveDrom(SVGBase):
             svg_output += root
 
         return svg_output
+
+    # Backward compatibility
+    genWaveBrick = gen_wave_brick
+    parseWaveLane = parse_wave_lane
+    parseWaveLanes = parse_wave_lanes
+    findLaneMarkers = find_lane_markers
+    renderWaveLane = render_wave_lane
+    renderMarks = render_marks
+    renderLabels = render_labels
+    renderArcs = render_arcs
+    parseConfig = parse_config
+    anotherTemplate = another_template
+    insertSVGTemplate = insert_svg_template
+    renderWaveForm = render_waveform
+    renderGroups = render_groups
+    renderGaps = render_gaps
+

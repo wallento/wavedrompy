@@ -33,7 +33,7 @@ from .bitfield import BitField
 def render(source="", output=[]):
     source = json.loads(source)
     if source.get("signal"):
-        return WaveDrom().renderWaveForm(0, source, output)
+        return WaveDrom().render_waveform(0, source, output)
     elif source.get("assign"):
         return Assign().render(0, source, output)
     elif source.get("reg"):
