@@ -89,9 +89,16 @@ class WaveDrom(SVGBase):
         sharpedge = sharpedge_clk.copy()
         sharpedge.update(sharpedge_sig)
 
+        # level: logical levels of symbols at wave
         level = {"=": "v", "2": "v", "3": "v", "4": "v", "5": "v", "h": "1", "H": "1", "l": "0", "L": "0"}
+        # translevel: Those are the levels at the end of a cycle (special for clocks)
+        translevel = level.copy()
+        translevel.update({"p": "0", "P": "0", "n": "1", "N": "1"})
+        # data: Modifiers of wavebricks that add data
         data = {"=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
+        # clkinvert: The inverse brick to clock symbols
         clkinvert = {"p": "nclk", "n": "pclk", "P": "nclk", "N": "pclk"}
+        # xclude: Those are actually identical levels, no transition
         xclude = {"hp": "111", "Hp": "111", "ln": "000", "Ln": "000",
                   "nh": "111", "Nh": "111", "pl": "000", "Pl": "000"}
 
@@ -112,7 +119,7 @@ class WaveDrom(SVGBase):
             if prev is None:
                 transition = level.get(this, this)*3 + data.get(this, "")
             else:
-                transition = level.get(prev, prev) + 'm' + level.get(this, this) + data.get(prev, "") + data.get(this, "")
+                transition = translevel.get(prev, prev) + 'm' + level.get(this, this) + data.get(prev, "") + data.get(this, "")
             value = level.get(this, this)*3 + data.get(this, "")
             wave = [transition, value] + [value, value] * repeat
 
