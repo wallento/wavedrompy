@@ -134,11 +134,16 @@ class BitField(SVGBase):
     def get_label(self, attr, x, y, step=0, length=0):
         return self.get_text(attr, x, y)
 
-    def get_attr(self, e, step, lsbm, msbm):
+    def get_attrs(self, e, step, lsbm, msbm):
         x = [step * (self.mod - ((msbm + lsbm) / 2) - 1)]
         attr = e['attr']
         bits = e['bits']
-        return self.get_label(attr, x, 0, step, bits)
+        attrs = [attr]
+        # 'attr' supports both a scalar and a list.
+        if isinstance(attr, list):
+            attrs = attr
+        return [self.get_label(a, x, 16 * i, step, bits)
+                for (i, a) in enumerate(attrs)]
 
     def labelArr(self, desc):
         step = self.opt.hspace / self.mod
@@ -179,7 +184,8 @@ class BitField(SVGBase):
                 size = [step * (msbm - lsbm + 1), self.opt.vspace/2]
                 blanks.add(self.element.rect(insert=insert, size=size, style=style))
             if e.get('attr'):
-                attrs.add(self.get_attr(e, step, lsbm, msbm))
+                for a in self.get_attrs(e, step, lsbm, msbm):
+                    attrs.add(a)
 
         g = self.container.g()
         g.add(blanks)
@@ -216,16 +222,38 @@ class BitField(SVGBase):
         return g
 
     def lane(self, desc):
-        g = self.container.g(transform = "translate({},{})".format(4.5, (self.opt.lanes-self.index-1)*self.opt.vspace + 0.5))
+        x = 4.5
+        y = ((self.opt.lanes-self.index-1) *
+             (self.opt.vspace+self.extra_attr_space)) + 0.5
+        g = self.container.g(transform = "translate({},{})".format(x, y))
         g.add(self.cage(desc))
         g.add(self.labels(desc))
         return g
 
+    def get_max_attrs(self, desc):
+        max_count = 0
+        for e in desc:
+            if 'attr' in e:
+                if isinstance(e['attr'], list):
+                    max_count = max(max_count, len(e['attr']))
+                else:
+                    max_count = max(max_count, 1)
+        return max_count
+
     def render(self, desc, opt = Options()):
         self.opt = opt
 
+        # Compute extra per-lane space needed if there are more than one attr
+        # for any field.  This spaces all lanes uniformly, matching the lane
+        # with the most attr's.
+        extra_attrs = 0
+        max_attrs = self.get_max_attrs(desc)
+        if max_attrs > 1:
+            extra_attrs = max_attrs - 1
+        self.extra_attr_space = extra_attrs * 16
+
         width = opt.hspace + 9
-        height = opt.vspace * opt.lanes + 5
+        height = (opt.vspace + self.extra_attr_space) * opt.lanes + 5
         viewbox = { 'viewBox': "0 0 {} {}".format(width, height)}
 
         template = svgwrite.Drawing(id="svgcontent", size=[width, height], **viewbox)
