@@ -58,6 +58,30 @@ basic = [
     Regression(wave="xlh.L.Hx", expected=['xxx', 'xxx', 'nclk', '000', 'pclk', '111', '111', '111', 'Nclk', '000',
                                           '000', '000', 'Pclk', '111', '1mx', 'xxx'])
 ]
+
+period = [
+    Regression(wave="h.nh.nh.l..hlx.hlx.hlx.hlx.hlx.hlx.hlx.hlx.hnh.l..hlx.hlx.h", period=0.5,
+               expected=['111', '111', 'nclk', 'pclk', '111', '111', 'nclk', 'pclk', '111', '111', 'nclk', '000', '000',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', 'pclk', '111',
+                         '111', 'nclk', '000', '000', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk']),
+    Regression(wave="h.lh..lh..l..hlx.hlx.hlx.hlx.hlx.hlx.hlx.hlx.hnh.l..hlx.hlx.h", period=0.5,
+               expected=['111', '111', 'nclk', 'pclk', '111', '111', 'nclk', 'pclk', '111', '111', 'nclk', '000', '000',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', 'pclk', '111',
+                         '111', 'nclk', '000', '000', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk']),
+    Regression(wave="0..............................................50.............", period=0.5,
+               expected=['000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000',
+                         '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000',
+                         '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000', '000',
+                         '000', '000', '000', '000', '000', '000', '000', '000', '0mv-5', 'vm0-5', '000', '000', '000',
+                         '000', '000', '000', '000', '000', '000', '000', '000', '000', '000']),
+]
+
 subcycle = [
     Regression(wave="0<10>1", expected=['000', '000', '0m1', '1m0', '0m1', '111']),
     Regression(wave="<10>10", expected=['111', '1m0', '0m1', '111', '1m0', '000']),
@@ -82,6 +106,13 @@ subcycle = [
     Regression(wave="<=|>.x", expected=['vvv-2', 'vvv-2', 'vvv-2', 'vvv-2', 'vmx-2', 'xxx']),
     Regression(wave="x<=|>.x", expected=['xxx', 'xxx', 'xmv-2', 'vvv-2', 'vvv-2', 'vvv-2', 'vmx-2', 'xxx']),
     Regression(wave="x<.|>0x", expected=['xxx', 'xxx', 'xxx', 'xxx', 'xm0', '000', '0mx', 'xxx']),
+    Regression(wave="hnhnhln<lx.h><lx.h><lx.h><lx.h><lx.h><lx.h><lx.h><lx.h>nhln<lx.h><lx.h>",
+               expected=['111', '111', 'nclk', 'pclk', '111', '111', 'nclk', 'pclk', '111', '111', 'nclk', '000', '000',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', 'pclk', '111',
+                         '111', 'nclk', '000', '000', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
+                         'pclk']),
 ]
 
-all = basic + subcycle
+all = basic + period + subcycle

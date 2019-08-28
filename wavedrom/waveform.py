@@ -68,20 +68,25 @@ class WaveDrom(SVGBase):
             "0": "000", "1": "111", "x": "xxx", "d": "ddd", "u": "uuu", "z": "zzz",
             "2": "vvv-2", "3": "vvv-3", "4": "vvv-4", "5": "vvv-5"}
 
-        stretch = int(stretch)
-
-        def getBrick(w):
-            if w in stretcher:
-                return stretcher[w]
-            elif w[2] in stretcher:
-                return stretcher[w[2]]
-            else:
-                return stretcher[w[-1]]
-
-        if stretch > 0:
-            return list(chain.from_iterable(([w] + [getBrick(w)]*stretch for w in wave)))
+        if stretch == -0.5:
+            # This is the only valid non-integer value, it essentially means halfing down. Further subsampling
+            # does not work I think..
+            return wave[0::2]
         else:
-            return wave
+            stretch = int(stretch)
+
+            def getBrick(w):
+                if w in stretcher:
+                    return stretcher[w]
+                elif w[2] in stretcher:
+                    return stretcher[w[2]]
+                else:
+                    return stretcher[w[-1]]
+
+            if stretch > 0:
+                return list(chain.from_iterable(([w] + [getBrick(w)]*stretch for w in wave)))
+            else:
+                return wave
 
     def gen_wave_brick(self, prev=None, this=None, stretch=0, repeat=0, subcycle=False):
         sharpedge_clk = { "p": "pclk", "n": "nclk", "P": "Pclk", "N": "Nclk" }
@@ -126,7 +131,8 @@ class WaveDrom(SVGBase):
         if subcycle:
             wave = wave[0:repeat+1]
 
-        wave = self.stretch_bricks(wave, stretch)
+        if not (stretch == -0.5 and this in sharpedge_clk.keys()):
+            wave = self.stretch_bricks(wave, stretch)
 
         return wave
 
@@ -182,7 +188,7 @@ class WaveDrom(SVGBase):
             sub_content = []
             sub_content.append([sigx.get("name", " "), sigx.get("phase", 0)])
             if sigx.get("wave"):
-                sub_content.append(self.parse_wave_lane(sigx["wave"], int(self.lane.period * self.lane.hscale - 1)))
+                sub_content.append(self.parse_wave_lane(sigx["wave"], self.lane.period * self.lane.hscale - 1))
             else:
                 sub_content.append(None)
             sub_content.append(data_extract(sigx))
