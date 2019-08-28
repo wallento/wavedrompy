@@ -271,12 +271,9 @@ class WaveDrom(SVGBase):
             return ret
 
         def captext(g, cxt, anchor, y):
-
             if cxt.get(anchor) and cxt[anchor].get("text"):
-                tmark = self.element.text("", x=[float(cxt.xmax) * float(cxt.xs) / 2],
+                tmark = self.element.text(cxt[anchor]["text"], x=[float(cxt.xmax) * float(cxt.xs) / 2],
                                           y=[y], text_anchor="middle", fill="#000")
-                tmark["xml:space"] = "preserve"
-                [tmark.add(get_elem(e)) for e in cxt[anchor]["text"][1:]]
                 g.add(tmark)
 
         def ticktock(g, cxt, ref1, ref2, x, dx, y, length):
