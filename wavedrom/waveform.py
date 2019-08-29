@@ -761,7 +761,7 @@ class WaveDrom(SVGBase):
             dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
             h = int(groups[i]["height"] * self.lane.yo - 16)
             group = self.element.path(id="group_{i}_{index}".format(i=i, index=index),
-                                      d="m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h}".format(dx=dx, dy=dy, h=h),
+                                      d="m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h} c 0,3 2,5 5,5".format(dx=dx, dy=dy, h=h),
                                       style="stroke:#0041c4;stroke-width:1;fill:none")
 
             root.add(group)
