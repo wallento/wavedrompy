@@ -169,7 +169,7 @@ class WaveDrom(SVGBase):
                 repeat += 1
             R.extend(self.gen_wave_brick(Top, This, stretch, repeat, subCycle))
 
-        for i in range(math.ceil(self.lane.phase)):
+        for i in range(int(math.ceil(self.lane.phase))):
             R = R[1:]
 
         return R
