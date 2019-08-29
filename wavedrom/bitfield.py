@@ -120,10 +120,19 @@ class BitField(SVGBase):
         return text
 
     def get_label(self, attr, x, y, step=0, length=0):
-        return self.get_text(attr, x, y)
+        if isinstance(attr, int):
+            attr = int(attr)
+            res = []
+            for i in range(length):
+                val = (attr >> i) & 1
+                xi = x + step * (length / 2 - i - 0.5)
+                res.append(self.get_text(val, xi, y))
+            return res
+        else:
+            return [self.get_text(attr, x, y)]
 
     def get_attrs(self, e, step, lsbm, msbm):
-        x = [step * (self.mod - ((msbm + lsbm) / 2) - 1)]
+        x = step * (self.mod - ((msbm + lsbm) / 2) - 1)
         attr = e['attr']
         bits = e['bits']
         attrs = [attr]
@@ -164,7 +173,8 @@ class BitField(SVGBase):
                 bits.add(self.get_text(msb, x=[step * (self.mod - msbm - 1)]))
             if e.get('name'):
                 x = step*(self.mod-((msbm+lsbm)/2)-1)
-                names.add(self.get_label(e['name'], x, 0))
+                for n in self.get_label(e['name'], x, 0):
+                    names.add(n)
 
             if not e.get('name') or e.get('type'):
                 style = 'fill-opacity:0.1' + type_style(e.get('type', 0))
@@ -172,8 +182,9 @@ class BitField(SVGBase):
                 size = [step * (msbm - lsbm + 1), self.opt.vspace/2]
                 blanks.add(self.element.rect(insert=insert, size=size, style=style))
             if e.get('attr') is not None:
-                for a in self.get_attrs(e, step, lsbm, msbm):
-                    attrs.add(a)
+                for attr in self.get_attrs(e, step, lsbm, msbm):
+                    for a in attr:
+                        attrs.add(a)
 
         g = self.container.g()
         g.add(blanks)
