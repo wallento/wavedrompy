@@ -169,7 +169,7 @@ class WaveDrom(SVGBase):
                 repeat += 1
             R.extend(self.gen_wave_brick(Top, This, stretch, repeat, subCycle))
 
-        for i in range(self.lane.phase):
+        for i in range(math.ceil(self.lane.phase)):
             R = R[1:]
 
         return R
@@ -184,7 +184,7 @@ class WaveDrom(SVGBase):
         content = []
         for sigx in sig:
             self.lane.period = sigx.get("period", 1)
-            self.lane.phase = int(sigx.get("phase", 0) * 2)
+            self.lane.phase = sigx.get("phase", 0) * 2
             sub_content = []
             sub_content.append([sigx.get("name", " "), sigx.get("phase", 0)])
             if sigx.get("wave"):
@@ -250,7 +250,7 @@ class WaveDrom(SVGBase):
                     if len(labels) != 0:
                         for k in range(len(labels)):
                             if val[2] and k < len(val[2]):
-                                tx = int(labels[k]) * self.lane.xs + self.lane.xlabel
+                                tx = int(labels[k]) * self.lane.xs + self.lane.xlabel - self.lane.phase
                                 title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
                                 title.add(self.element.tspan(val[2][k]))
                                 title["xml:space"] = "preserve"
@@ -361,7 +361,7 @@ class WaveDrom(SVGBase):
 
             for idx, val in enumerate(source):
                 self.lane.period = val.get("period", 1)
-                self.lane.phase = int(val.get("phase", 0) * 2)
+                self.lane.phase = val.get("phase", 0) * 2
 
                 dy = self.lane.y0 + idx * self.lane.yo
                 g = self.container.g(id="labels_{i}_{index}".format(i=idx, index=index))
@@ -410,7 +410,7 @@ class WaveDrom(SVGBase):
         if source:
             for idx, val in enumerate(source):
                 self.lane.period = val.get("period", 1)
-                self.lane.phase = int(val.get("phase", 0) * 2)
+                self.lane.phase = val.get("phase", 0) * 2
                 text = val.get("node")
                 if text:
                     Stack = list(text)
