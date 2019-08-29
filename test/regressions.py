@@ -113,6 +113,9 @@ subcycle = [
                          'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', 'pclk', '111',
                          '111', 'nclk', '000', '000', 'pclk', 'nclk', '0mx', 'xxx', 'pclk', 'nclk', '0mx', 'xxx',
                          'pclk']),
+    Regression(wave="0.h<.>l.", expected=['000', '000', '000', '000', 'pclk', '111', '111', 'nclk', '000', '000', '000']),
+    Regression(wave="0.<h>.l.", expected=['000', '000', '000', '000', 'pclk', '111', '111', 'nclk', '000', '000', '000']),
+    Regression(wave="0.<h..>l.", expected=['000', '000', '000', '000', 'pclk', '111', '111', 'nclk', '000', '000', '000']),
 ]
 
 all = basic + period + subcycle
