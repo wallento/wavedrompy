@@ -223,44 +223,43 @@ class WaveDrom(SVGBase):
 
         for j, val in enumerate(content):
             name = val[0][0]
-            if name:  # check name
-                dy = self.lane.y0 + j * self.lane.yo
-                g = self.container.g(id="wavelane_{j}_{index}".format(j=j, index=index))
-                g.translate(0, dy)
-                title = self.element.text("", x=[self.lane.tgo], y=[self.lane.ym], text_anchor="end")
-                title.add(self.element.tspan(name))
-                title["xml:space"] = "preserve"
-                title["class"] = "info"
-                g.add(title)
+            dy = self.lane.y0 + j * self.lane.yo
+            g = self.container.g(id="wavelane_{j}_{index}".format(j=j, index=index))
+            g.translate(0, dy)
+            title = self.element.text("", x=[self.lane.tgo], y=[self.lane.ym], text_anchor="end")
+            title.add(self.element.tspan(name))
+            title["xml:space"] = "preserve"
+            title["class"] = "info"
+            g.add(title)
 
-                glengths.append(len(name) * self.font_width + self.font_width)
+            glengths.append(len(name) * self.font_width + self.font_width)
 
-                xoffset = val[0][1]
-                xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else -2 * xoffset
-                gg = self.container.g(id="wavelane_draw_{j}_{index}".format(j=j, index=index))
-                gg.translate(xoffset * self.lane.xs, 0)
+            xoffset = val[0][1]
+            xoffset = math.ceil(2 * xoffset) - 2 * xoffset if xoffset > 0 else -2 * xoffset
+            gg = self.container.g(id="wavelane_draw_{j}_{index}".format(j=j, index=index))
+            gg.translate(xoffset * self.lane.xs, 0)
 
-                if val[1]:
-                    for i in range(len(val[1])):
-                        b = self.container.use(href="#{}".format(val[1][i]))
-                        b.translate(i * self.lane.xs)
-                        gg.add(b)
+            if val[1]:
+                for i in range(len(val[1])):
+                    b = self.container.use(href="#{}".format(val[1][i]))
+                    b.translate(i * self.lane.xs)
+                    gg.add(b)
 
-                    if val[2] and len(val[2]):
-                        labels = self.find_lane_markers(val[1])
-                        if len(labels) != 0:
-                            for k in range(len(labels)):
-                                if val[2] and k < len(val[2]):
-                                    tx = int(labels[k]) * self.lane.xs + self.lane.xlabel
-                                    title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
-                                    title.add(self.element.tspan(val[2][k]))
-                                    title["xml:space"] = "preserve"
-                                    gg.add(title)
+                if val[2] and len(val[2]):
+                    labels = self.find_lane_markers(val[1])
+                    if len(labels) != 0:
+                        for k in range(len(labels)):
+                            if val[2] and k < len(val[2]):
+                                tx = int(labels[k]) * self.lane.xs + self.lane.xlabel
+                                title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
+                                title.add(self.element.tspan(val[2][k]))
+                                title["xml:space"] = "preserve"
+                                gg.add(title)
 
-                    if len(val[1]) > xmax:
-                        xmax = len(val[1])
-                g.add(gg)
-                root.add(g)
+                if len(val[1]) > xmax:
+                    xmax = len(val[1])
+            g.add(gg)
+            root.add(g)
         self.lane.xmax = xmax
         self.lane.xg = xgmax + 20
         return glengths
