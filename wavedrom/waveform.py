@@ -702,7 +702,7 @@ class WaveDrom(SVGBase):
 
         template = svgwrite.Drawing(id="svgcontent_{index}".format(index=index))
         if index == 0:
-            template.defs.add(template.style(css.css.default))
+            template.add(template.style(css.css.default))
             [template.defs.add(get_container(e)) for e in skin[3][1:]]
             self.lane.xs = int(skin[3][1][2][1]["width"])
             self.lane.ys = int(skin[3][1][2][1]["height"])
