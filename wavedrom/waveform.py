@@ -709,6 +709,9 @@ class WaveDrom(SVGBase):
             self.lane.xlabel = int(skin[3][1][2][1]["x"])
             self.lane.ym = int(skin[3][1][2][1]["y"])
 
+        template["class"] = "WaveDrom"
+        template["overflow"] = "hidden"
+
         return template
 
     def insert_svg_template(self, index=0, parent=[], source={}):
