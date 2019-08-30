@@ -260,7 +260,7 @@ class WaveDrom(SVGBase):
 
                 self.render_lane_uses(val, gg)
 
-                if len(val[1]) > xmax:
+                if val[1] and len(val[1]) > xmax:
                     xmax = len(val[1])
 
                 g.add(gg)
