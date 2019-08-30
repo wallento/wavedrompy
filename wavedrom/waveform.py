@@ -832,7 +832,8 @@ class WaveDrom(SVGBase):
                 g = self.container.g(id="wavegap_{i}_{index}".format(i=idx, index=index))
                 g.translate(0, dy)
 
-                self.render_gap_uses(val["wave"], g)
+                if "wave" in val:
+                    self.render_gap_uses(val["wave"], g)
 
                 gg.add(g)
 
