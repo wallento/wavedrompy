@@ -228,7 +228,7 @@ class WaveDrom(SVGBase):
                 if len(labels) != 0:
                     for k in range(len(labels)):
                         if val[2] and k < len(val[2]):
-                            tx = int(labels[k]) * self.lane.xs + self.lane.xlabel - self.lane.phase
+                            tx = int(labels[k]) * self.lane.xs + self.lane.xlabel
                             title = self.element.text("", x=[tx], y=[self.lane.ym], text_anchor="middle")
                             title.add(self.element.tspan(val[2][k]))
                             title["xml:space"] = "preserve"
