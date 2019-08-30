@@ -671,7 +671,6 @@ class WaveDrom(SVGBase):
             [ret.add(gen_elem(e)) for e in elem[2:]]
 
             return ret
-        # default.add_stylesheet("css/default.css", title="default")
         skin = waveskin.WaveSkin["default"]
 
         if source.get("config") and source.get("config").get("skin"):
