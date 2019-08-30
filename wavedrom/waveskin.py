@@ -448,10 +448,10 @@ WaveSkin['default'] = ["svg", {"id": "svg", "xmlns": "http://www.w3.org/2000/svg
                          ["path", {"d": "M0,0 -15,0", "class": "s12"}]
                          ],
                         ["marker", {"id": "arrowhead", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth",
-                                    "viewBox": "0 -4 11 8", "refX": "10", "refY": "0", "orient": "auto"},
+                                    "viewBox": "0 -4 11 8", "refX": "15", "refY": "0", "orient": "auto"},
                          ["path", {"d": "M0 -4 11 0 0 4z"}]
                          ],
-                        ["marker", {"id": "arrowtail", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth", "viewBox": "-11 -4 11 8", "refX": "-10", "refY": "0", "orient": "auto"},
+                        ["marker", {"id": "arrowtail", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth", "viewBox": "-11 -4 11 8", "refX": "-15", "refY": "0", "orient": "auto"},
                          ["path", {"d": "M0 -4 -11 0 0 4z"}]
                          ]
                         ],
@@ -708,6 +708,6 @@ WaveSkin['narrow'] = ["svg", {"id": "svg", "xmlns": "http://www.w3.org/2000/svg"
                        ["g", {"id": "vmv-2-2"}, ["path", {"d": "M 7,0 10,0 10,20 7,20 4,10 z", "class": "s10"}], ["path", {"d": "M 1,0 0,0 0,20 1,20 4,10 z",
                                                                                                                            "class": "s10"}], ["path", {"d": "m 0,0 1,0 6,20 3,0", "class": "s1"}], ["path", {"d": "M 0,20 1,20 7,0 10,0", "class": "s1"}]],
                        ["marker", {"id": "arrowhead", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth",
-                                   "viewBox": "0 -4 11 8", "refX": "10", "refY": "0", "orient": "auto"}, ["path", {"d": "M0 -4 11 0 0 4z"}]],
-                       ["marker", {"id": "arrowtail", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth", "viewBox": "-11 -4 11 8", "refX": "-10", "refY": "0", "orient": "auto"}, ["path", {"d": "M0 -4 -11 0 0 4z"}]]],
+                                   "viewBox": "0 -4 11 8", "refX": "15", "refY": "0", "orient": "auto"}, ["path", {"d": "M0 -4 11 0 0 4z"}]],
+                       ["marker", {"id": "arrowtail", "style": "fill:#0041c4", "markerHeight": "7", "markerWidth": "10", "markerUnits": "strokeWidth", "viewBox": "-11 -4 11 8", "refX": "-15", "refY": "0", "orient": "auto"}, ["path", {"d": "M0 -4 -11 0 0 4z"}]]],
                       ["g", {"id": "waves"}, ["g", {"id": "lanes"}], ["g", {"id": "groups"}]]]
