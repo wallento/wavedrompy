@@ -26,7 +26,7 @@ def test_upstream(tmpdir):
         f_out_py = "{}/{}_py.svg".format(tmpdir, f)
 
         subprocess.check_call("{}/bin/cli.js -i {} > {}".format(wavedromdir, f_in, f_out), shell=True)
-        wavedrom.render_file(f_in, f_out_py)
+        wavedrom.render_file(f_in, f_out_py, strict_js_features=True)
 
         parser = etree.XMLParser(remove_blank_text=True)
         orig_tree = etree.parse(f_out, parser)

@@ -755,7 +755,7 @@ class WaveDrom(SVGBase):
 
         parent.extend(e)
 
-    def render_waveform(self, index=0, source={}, output=[]):
+    def render_waveform(self, index=0, source={}, output=[], strict_js_features=False):
         xmax = 0
 
         if source.get("signal"):
@@ -772,7 +772,8 @@ class WaveDrom(SVGBase):
                 xmax = max(xmax, (val + ret.width[i]))
             self.render_marks(lanes, content, index)
             self.render_gaps(lanes, ret.lanes, index)
-            self.render_labels(lanes, ret.lanes, index)
+            if not strict_js_features:
+                self.render_labels(lanes, ret.lanes, index)
             self.render_arcs(lanes, ret.lanes, index, source)
             self.render_groups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs

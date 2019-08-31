@@ -23,6 +23,7 @@
 
 import argparse
 import json
+import os
 import sys
 
 from .waveform import WaveDrom
@@ -31,24 +32,24 @@ from .version import version
 from .bitfield import BitField
 
 
-def render(source="", output=[]):
+def render(source="", output=[], strict_js_features = False):
     source = json.loads(source)
     if source.get("signal"):
-        return WaveDrom().render_waveform(0, source, output)
+        return WaveDrom().render_waveform(0, source, output, strict_js_features)
     elif source.get("assign"):
         return Assign().render(0, source, output)
     elif source.get("reg"):
         return BitField().renderJson(source)
 
 
-def render_write(source, output):
+def render_write(source, output, strict_js_features = False):
     jinput = source.read()
-    out = render(jinput)
+    out = render(jinput, strict_js_features=strict_js_features)
     out.write(output)
 
 
-def render_file(source, output):
-    render_write(open(source, "r"), open(output, "w"))
+def render_file(source, output, strict_js_features = False):
+    render_write(open(source, "r"), open(output, "w"), strict_js_features=strict_js_features)
 
 
 def main():
@@ -59,4 +60,4 @@ def main():
                         nargs='?', type=argparse.FileType('w'), default=sys.stdout)
     args = parser.parse_args()
 
-    render_write(args.input, args.svg)
+    render_write(args.input, args.svg, False)
