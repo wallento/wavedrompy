@@ -141,7 +141,7 @@ setup(
     # projects.
     extras_require={  # Optional
         # "dev": ["check-manifest"],
-        # "test": ["coverage"],
+        "test": ["xmldiff"],
     },
 
     setup_requires=[

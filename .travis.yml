@@ -1,18 +1,16 @@
 language: python
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
 
 before_install:
-  - sudo apt-get install -y librsvg2-bin
+  - sudo apt-get install -y librsvg2-bin npm
 
 install:
-  - python setup.py install
+  - pip install .[test]
 
 script:
   - pytest
-  - cd test; ./test.sh
 
 
