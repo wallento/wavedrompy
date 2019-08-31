@@ -694,15 +694,13 @@ class WaveDrom(SVGBase):
             [ret.add(gen_elem(e)) for e in elem[2:]]
 
             return ret
-        skin = waveskin.WaveSkin["default"]
 
-        if source.get("config") and source.get("config").get("skin"):
-            if waveskin.WaveSkin.get(source.get("config").get("skin")):
-                skin = waveskin.WaveSkin[source.get("config").get("skin")]
+        skinname = source.get("config", {"skin" : "default"}).get("skin", "default")
+        skin = waveskin.WaveSkin.get(skinname, waveskin.WaveSkin["default"])
 
         template = svgwrite.Drawing(id="svgcontent_{index}".format(index=index))
         if index == 0:
-            template.add(template.style(css.css.default))
+            template.add(template.style(skin[2][2]))
             [template.defs.add(get_container(e)) for e in skin[3][1:]]
             self.lane.xs = int(skin[3][1][2][1]["width"])
             self.lane.ys = int(skin[3][1][2][1]["height"])
