@@ -12,22 +12,26 @@ files_tutorial = ["tutorial_{}".format(i) for i in range(13)] + ["tutorial_{}n".
 
 files = files_basic + files_tutorial
 
+
 def pytest_generate_tests(metafunc):
     metafunc.parametrize("file", files)
+
 
 def test_render(file):
     jinput = open("test/files/{}.json".format(file)).read()
     wavedrom.render(jinput)
 
-@pytest.fixture(scope="module")
-def wavedromdir(tmpdir):
+
+@pytest.fixture(scope="session")
+def wavedromdir(tmpdir_factory):
     if "WAVEDROMDIR" in os.environ:
         return os.environ["WAVEDROMDIR"]
     else:
-        wavedromdir = "{}/wavedrom".format(tmpdir)
+        wavedromdir = tmpdir_factory.mktemp("wavedrom")
         subprocess.check_call("git clone https://github.com/wavedrom/wavedrom.git {}".format(wavedromdir), shell=True)
         subprocess.check_call("npm install", cwd=wavedromdir, shell=True)
         return wavedromdir
+
 
 def test_upstream(tmpdir,wavedromdir,file):
     f_in = "test/files/{}.json".format(file)
