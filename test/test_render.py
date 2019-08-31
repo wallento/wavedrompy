@@ -19,7 +19,7 @@ def test_render(file):
     jinput = open("test/files/{}.json".format(file)).read()
     wavedrom.render(jinput)
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def wavedromdir(tmpdir):
     if "WAVEDROMDIR" in os.environ:
         return os.environ["WAVEDROMDIR"]
