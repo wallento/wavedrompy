@@ -782,7 +782,7 @@ class WaveDrom(SVGBase):
             template["height"] = height
             template.viewbox(0, 0, width, height)
             dx = self.lane.xg + 0.5
-            dy = float(self.lane.yh0) + float(self.lane.yh1)
+            dy = float(self.lane.yh0) + float(self.lane.yh1) + 0.5
             lanes.translate(dx, dy)
 
             waves.add(lanes)
