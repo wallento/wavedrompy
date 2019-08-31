@@ -260,7 +260,7 @@ class WaveDrom(SVGBase):
         glengths = []
 
         for j, val in enumerate(content):
-            name = val[0][0]
+            name = val[0][0].strip()
             if name is not None:
                 dy = self.lane.y0 + j * self.lane.yo
                 g = self.container.g(id="wavelane_{j}_{index}".format(j=j, index=index))
