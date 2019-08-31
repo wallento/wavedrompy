@@ -23,6 +23,7 @@
 
 import argparse
 import json
+import sys
 
 from .waveform import WaveDrom
 from .assign import Assign
@@ -40,22 +41,22 @@ def render(source="", output=[]):
         return BitField().renderJson(source)
 
 
-def main(args=None):
-    if not args:
-        parser = argparse.ArgumentParser(description="")
-        parser.add_argument("--input", "-i", help="<input wavedrom source filename>")
-        parser.add_argument("--svg", "-s", help="<output SVG image file name>")
-        args = parser.parse_args()
+def render_write(source, output):
+    jinput = source.read()
+    out = render(jinput)
+    out.write(output)
 
-    output = []
-    inputfile = args.input
-    outputfile = args.svg
 
-    if not inputfile or not outputfile:
-        parser.print_help()
-    else:
-        with open(inputfile, "r") as f:
-            jinput = f.read()
+def render_file(source, output):
+    render_write(open(source, "r"), open(output, "w"))
 
-        output = render(jinput)
-        output.saveas(outputfile)
+
+def main():
+    parser = argparse.ArgumentParser(description="")
+    parser.add_argument("--input", "-i", help="<input wavedrom source filename>",
+                        required=True, type=argparse.FileType('r'))
+    parser.add_argument("--svg", "-s", help="<output SVG image file name>",
+                        nargs='?', type=argparse.FileType('w'), default=sys.stdout)
+    args = parser.parse_args()
+
+    render_write(args.input, args.svg)
