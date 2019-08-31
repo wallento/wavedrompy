@@ -1,7 +1,7 @@
 import pytest
 
 from wavedrom import WaveDrom
-from regressions import all
+from brick_regressions import all
 
 
 @pytest.fixture
