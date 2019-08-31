@@ -22,6 +22,13 @@ def main(f_out, f_out_py):
             elif re.sub(r"\s+", "", node.attrib[action.name]) == re.sub(r"\s+", "", action.value):
                 # Whitespace differences are okay
                 continue
+            elif action.name == "transform" and re.match(r"translate\(\d+\.\d+\)", action.value):
+                # Float vs. int in attribute
+                transpy = re.match(r"translate\((\d+)\.\d+\)", action.value).group(1)
+                transjs = re.match(r"translate\((\d+)\)", node.attrib["transform"]).group(1)
+                if transpy == transjs:
+                    continue
+
         elif isinstance(action, xmldiff.actions.InsertAttrib):
             node = orig_tree.xpath(action.node)[0]
             if node.tag[-3:] == "svg" and action.name in ["baseProfile", "version"]:
