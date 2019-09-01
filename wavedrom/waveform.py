@@ -377,8 +377,8 @@ class WaveDrom(SVGBase):
                                    style="stroke:#888;stroke-width:0.5;stroke-dasharray:1,3")
             g.add(gg)
 
-        self.captext(g, self.lane, "head", -33 if self.lane.yh0 else -13)
-        self.captext(g, self.lane, "foot", gy + (45 if self.lane.yf0 else 25))
+        self.captext(g, self.lane, "head", -33 if (self.lane.yh0 > 0) else -13)
+        self.captext(g, self.lane, "foot", gy + (45 if (self.lane.yf0 > 0) else 25))
         self.ticktock(g, self.lane, "head", "tick",          0, mmstep,      -5, marks + 1)
         self.ticktock(g, self.lane, "head", "tock", mmstep / 2, mmstep,      -5, marks)
         self.ticktock(g, self.lane, "foot", "tick",          0, mmstep, gy + 15, marks + 1)
@@ -629,9 +629,7 @@ class WaveDrom(SVGBase):
         self.lane.yh1 = 0
         if source and source.get("head"):
             self.lane.head = source["head"]
-            if source.get("head").get("tick", 0) == 0:
-                self.lane.yh0 = 20
-            if source.get("head").get("tock", 0) == 0:
+            if "tick" in source["head"] or "tock" in source["head"]:
                 self.lane.yh0 = 20
             if source.get("head").get("text"):
                 self.lane.yh1 = 46
@@ -641,9 +639,7 @@ class WaveDrom(SVGBase):
         self.lane.yf1 = 0
         if source and source.get("foot"):
             self.lane.foot = source["foot"]
-            if source.get("foot").get("tick", 0) == 0:
-                self.lane.yf0 = 20
-            if source.get("foot").get("tock", 0) == 0:
+            if "tick" in source["foot"] or "tock" in source["foot"]:
                 self.lane.yf0 = 20
             if source.get("foot").get("text"):
                 self.lane.yf1 = 46
