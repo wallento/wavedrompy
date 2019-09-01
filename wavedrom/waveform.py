@@ -33,6 +33,7 @@ import svgwrite
 from attrdict import AttrDict
 from collections import deque
 
+from wavedrom.tspan import JsonMLElement
 from . import waveskin, css
 from .base import SVGBase
 
@@ -293,7 +294,10 @@ class WaveDrom(SVGBase):
         if cxt.get(anchor) and cxt[anchor].get("text"):
             tmark = self.element.text("", x=[float(cxt.xmax)*float(cxt.xs)/2], y=[y], text_anchor="middle", fill="#000")
             tmark["xml:space"] = "preserve"
-            tmark.add(self.element.tspan(cxt[anchor]["text"]))
+            if isinstance(cxt[anchor]["text"], str):
+                tmark.add(self.element.tspan(cxt[anchor]["text"]))
+            else:
+                tmark.add(JsonMLElement(cxt[anchor]["text"]))
             g.add(tmark)
 
     def ticktock(self, g, cxt, ref1, ref2, x, dx, y, length):

@@ -25,17 +25,12 @@
 # https://github.com/drom/wavedrom/blob/master/src/WaveDrom.js
 #
 
-import sys
-if sys.version_info < (3, 0):
-    from HTMLParser import HTMLParser
-else:
-    from html.parser import HTMLParser
 from math import floor
 
 import svgwrite
 
 from .base import SVGBase
-
+from .tspan import TspanParser
 
 class Options:
     def __init__(self, vspace=80, hspace=640, lanes=2, bits=32, fontsize=14, bigendian=False, fontfamily='sans-serif',
@@ -56,43 +51,6 @@ def type_style(t):
         return ";fill:hsl({},100%,50%)".format(colors[t])
     else:
         return ''
-
-
-class TspanParser(HTMLParser, object):
-    tags = {
-        'o': {'text_decoration': 'overline'},
-        'ins': {'text_decoration': 'underline'},
-        'sub': {'baseline_shift': 'sub'},
-        'sup': {'baseline_shift': 'super'},
-        'b': {'font_weight': 'bold'},
-        'i': {'font_style': 'italic'},
-        's': {'text_decoration': 'line-through'},
-        'tt': {'font_family': 'monospace'},
-    }
-
-    def __init__(self):
-        super(TspanParser, self).__init__()
-        self.text = []
-        self.state = []
-
-    def handle_starttag(self, tag, attrs):
-        self.state.append(tag)
-
-    def handle_endtag(self, tag):
-        if self.state.pop() != tag:
-            raise RuntimeError("Unexpected closing tag: {}".format(tag))
-
-    def get_style(self):
-        return {k: v for d in [self.tags[t] for t in self.state] for k, v in d.items()}
-
-    def handle_data(self, data):
-        if len(self.state) == 0:
-            self.text.append(svgwrite.text.TSpan(data))
-        else:
-            self.text.append(svgwrite.text.TSpan(data, **self.get_style()))
-
-    def get_text(self):
-        return self.text
 
 
 class BitField(SVGBase):
