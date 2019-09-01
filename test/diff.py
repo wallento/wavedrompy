@@ -24,6 +24,10 @@ def main(f_out, f_out_py):
                 # The viewBox format differs, both are legal notations (space vs. comma-separated)
                 if re.sub(r"\s+", ",", node.attrib[action.name]) == action.value:
                     continue
+            elif action.name in ["x"]:
+                # Floating point and int differences
+                if float(action.value) == float(node.attrib[action.name]):
+                    continue
             elif re.sub(r"\s+", "", node.attrib[action.name]) == re.sub(r"\s+", "", action.value):
                 # Whitespace differences are okay
                 continue
