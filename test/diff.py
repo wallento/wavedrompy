@@ -1,9 +1,12 @@
 import re
+from collections import namedtuple
 
 import xmldiff
 import xmldiff.main
 from attrdict import AttrDict
 from lxml import etree
+
+UpdateAttribx = namedtuple("UpdateAttribx", 'node name value old')
 
 
 def main(f_out, f_out_py):
@@ -32,6 +35,7 @@ def main(f_out, f_out_py):
                 js = AttrDict({"x": match_js[1], "y": match_js[2]})
                 if float(py.x) == float(js.x) and (py.y is None or py.y == js.y):
                     continue
+            action = UpdateAttribx(**{ **action._asdict(), "old": node.attrib[action.name]})
         elif isinstance(action, xmldiff.actions.InsertAttrib):
             node = orig_tree.xpath(action.node)[0]
             if node.tag[-3:] == "svg" and action.name in ["baseProfile", "version"]:
