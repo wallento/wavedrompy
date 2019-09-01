@@ -2,7 +2,9 @@ import re
 
 import xmldiff
 import xmldiff.main
+from attrdict import AttrDict
 from lxml import etree
+
 
 def main(f_out, f_out_py):
     parser = etree.XMLParser(remove_blank_text=True)
@@ -22,13 +24,14 @@ def main(f_out, f_out_py):
             elif re.sub(r"\s+", "", node.attrib[action.name]) == re.sub(r"\s+", "", action.value):
                 # Whitespace differences are okay
                 continue
-            elif action.name == "transform" and re.match(r"translate\(\d+\.\d+\)", action.value):
+            elif action.name == "transform" and re.match(r"translate\(.*\)", action.value):
                 # Float vs. int in attribute
-                transpy = re.match(r"translate\((\d+)\.\d+\)", action.value).group(1)
-                transjs = re.match(r"translate\((\d+)\)", node.attrib["transform"]).group(1)
-                if transpy == transjs:
+                match_py = re.match(r"translate\((\d+(?:\.\d+)?)(?:\s*[\s,]\s*(\d+(?:\.\d+)?))?\)", action.value)
+                py = AttrDict({"x": match_py[1], "y": match_py[2]})
+                match_js = re.match(r"translate\((\d+(?:\.\d+)?)(?:\s*[\s,]\s*(\d+(?:\.\d+)?))?\)", node.attrib["transform"])
+                js = AttrDict({"x": match_js[1], "y": match_js[2]})
+                if float(py.x) == float(js.x) and (py.y is None or py.y == js.y):
                     continue
-
         elif isinstance(action, xmldiff.actions.InsertAttrib):
             node = orig_tree.xpath(action.node)[0]
             if node.tag[-3:] == "svg" and action.name in ["baseProfile", "version"]:
