@@ -33,6 +33,8 @@ import svgwrite
 from attrdict import AttrDict
 from collections import deque
 
+from six import string_types
+
 from wavedrom.tspan import JsonMLElement
 from . import waveskin, css
 from .base import SVGBase
@@ -179,7 +181,7 @@ class WaveDrom(SVGBase):
         def data_extract(e):
             tmp = e.get("data")
             if tmp is not None:
-                tmp = tmp.split() if self.is_type_str(tmp) else tmp
+                tmp = tmp.split() if isinstance(tmp, string_types) else tmp
             return tmp
 
         content = []
@@ -294,7 +296,7 @@ class WaveDrom(SVGBase):
         if cxt.get(anchor) and cxt[anchor].get("text"):
             tmark = self.element.text("", x=[float(cxt.xmax)*float(cxt.xs)/2], y=[y], text_anchor="middle", fill="#000")
             tmark["xml:space"] = "preserve"
-            if isinstance(cxt[anchor]["text"], str):
+            if isinstance(cxt[anchor]["text"], string_types):
                 tmark.add(self.element.tspan(cxt[anchor]["text"]))
             else:
                 tmark.add(JsonMLElement(cxt[anchor]["text"]))
@@ -308,7 +310,7 @@ class WaveDrom(SVGBase):
 
         val = cxt[ref1][ref2]
 
-        if self.is_type_str(val):
+        if isinstance(val, string_types):
             val = val.split()
         elif type(val) is int:
             offset = val
@@ -321,7 +323,7 @@ class WaveDrom(SVGBase):
                 return
             elif len(val) == 1:
                 offset = val[0]
-                if self.is_type_str(offset):
+                if isinstance(offset, string_types):
                     L = val
                 else:
                     for i in range(length):
@@ -333,7 +335,7 @@ class WaveDrom(SVGBase):
                 if len(tmp) == 2:
                     dp = len(tmp[1])
 
-                if self.is_type_str(offset) or self.is_type_str(step):
+                if isinstance(offset, string_types) or isinstance(step, string_types):
                     L = val
                 else:
                     offset = step * offset
@@ -864,12 +866,6 @@ class WaveDrom(SVGBase):
                 gg.add(g)
 
             root.add(gg)
-
-    def is_type_str(self, var):
-        if sys.version_info[0] < 3:
-            return type(var) in [str, unicode]
-        else:
-            return type(var) is str
 
     def convert_to_svg(self, root):
         svg_output = ""

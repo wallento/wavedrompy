@@ -2,6 +2,7 @@ import sys
 
 import svgwrite
 from attrdict import AttrDict
+from six import string_types
 from svgwrite.base import BaseElement
 from svgwrite.etree import etree
 
@@ -71,7 +72,7 @@ class JsonMLElement(BaseElement):
             raise ValueError("JsonML must be a list")
         if len(e) == 0:
             raise ValueError("JsonML cannot be an empty list")
-        if not isinstance(e[0], str):
+        if not isinstance(e[0], string_types):
             raise ValueError("JsonML tagname must be string")
         ret = AttrDict({"tagname": e[0], "attributes": {}, "element-list": []})
         if len(e) > 1:
@@ -106,7 +107,7 @@ class JsonMLElement(BaseElement):
         # style ("<tspan>a<tspan>b</tspan>c</tspan>")
         last = None
         for c in e.element_list:
-            if isinstance(c, str):
+            if isinstance(c, string_types):
                 # Strings need special treatment for insertion
                 # as those are not elements
                 if last is None:
