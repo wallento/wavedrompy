@@ -40,7 +40,11 @@ def main(f_out, f_out_py):
                     js = pattern_comma.sub(r',', js)
                     if py == js:
                         continue
-            action = UpdateAttribx(**{ **action._asdict(), "old": node.attrib[action.name]})
+            # Python >3.5, remove once we are over 2.7..
+            # action = UpdateAttribx(**{ **action._asdict(), "old": node.attrib[action.name]})
+            action_dict = action._asdict()
+            action_dict["old"] = node.attrib[action.name]
+            action = UpdateAttribx(**action_dict)
         elif isinstance(action, xmldiff.actions.InsertAttrib):
             node = orig_tree.xpath(action.node)[0]
             if node.tag[-3:] == "svg" and action.name in ["baseProfile", "version"]:
