@@ -29,7 +29,7 @@ def wavedromdir(tmpdir_factory):
     else:
         wavedromdir = tmpdir_factory.mktemp("wavedrom")
         subprocess.check_call("git clone https://github.com/wavedrom/wavedrom.git {}".format(wavedromdir), shell=True)
-        subprocess.check_call("npm install", cwd=wavedromdir, shell=True)
+        subprocess.check_call("npm install", cwd=str(wavedromdir), shell=True)
         return wavedromdir
 
 
