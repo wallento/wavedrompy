@@ -548,7 +548,7 @@ class WaveDrom(SVGBase):
                                   d=shapeProps.d, style=shapeProps.style)
 
     def render_label(self, p, text):
-        w = len(text) * self.font_width
+        w = self.text_width(text,8) + 2
         g = self.container.g(transform = "translate({},{})".format(p.x, p.y))
         rect = self.element.rect(insert=(0-w/2, -5), size=(w, 10), style="fill:#FFF;")
         label = self.element.text("", style="font-size:8px;", text_anchor="middle", y=[3])
