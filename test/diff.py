@@ -24,21 +24,22 @@ def main(f_out, f_out_py):
                 # The viewBox format differs, both are legal notations (space vs. comma-separated)
                 if re.sub(r"\s+", ",", node.attrib[action.name]) == action.value:
                     continue
-            elif action.name in ["x"]:
-                # Floating point and int differences
-                if float(action.value) == float(node.attrib[action.name]):
-                    continue
             elif re.sub(r"\s+", "", node.attrib[action.name]) == re.sub(r"\s+", "", action.value):
                 # Whitespace differences are okay
                 continue
-            elif action.name == "transform" and re.match(r"translate\(.*\)", action.value):
-                # Float vs. int in attribute
-                match_py = re.match(r"translate\((\d+(?:\.\d+)?)(?:\s*[\s,]\s*(\d+(?:\.\d+)?))?\)", action.value)
-                py = AttrDict({"x": match_py[1], "y": match_py[2]})
-                match_js = re.match(r"translate\((\d+(?:\.\d+)?)(?:\s*[\s,]\s*(\d+(?:\.\d+)?))?\)", node.attrib["transform"])
-                js = AttrDict({"x": match_js[1], "y": match_js[2]})
-                if float(py.x) == float(js.x) and (py.y is None or py.y == js.y):
-                    continue
+            else:
+                py = action.value
+                js = node.attrib[action.name]
+                if action.name in ["transform", "d", "x"]:
+                    # Floating point and int differences
+                    pattern_float = re.compile(r'(?<![\d.])([0-9]+)(?![\d.])')
+                    pattern_comma = re.compile(r'\s*,\s*')
+                    py = pattern_float.sub(r'\1.0', py)
+                    js = pattern_float.sub(r'\1.0', js)
+                    py = pattern_comma.sub(r',', py)
+                    js = pattern_comma.sub(r',', js)
+                    if py == js:
+                        continue
             action = UpdateAttribx(**{ **action._asdict(), "old": node.attrib[action.name]})
         elif isinstance(action, xmldiff.actions.InsertAttrib):
             node = orig_tree.xpath(action.node)[0]
