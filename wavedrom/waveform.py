@@ -550,7 +550,9 @@ class WaveDrom(SVGBase):
     def render_label(self, p, text):
         w = self.text_width(text,8) + 2
         g = self.container.g(transform = "translate({},{})".format(p.x, p.y))
-        rect = self.element.rect(insert=(0-w/2, -5), size=(w, 10), style="fill:#FFF;")
+        # todo: I don't think this is correct. reported:
+        # https://github.com/wavedrom/wavedrom/issues/252
+        rect = self.element.rect(insert=(int(0-w/2), -5), size=(w, 10), style="fill:#FFF;")
         label = self.element.text("", style="font-size:8px;", text_anchor="middle", y=[3])
         label.add(self.element.tspan(text))
         g.add(rect)
