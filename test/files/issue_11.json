@@ -1,0 +1,26 @@
+{ "signal": [
+  { "name": "0",   "wave": "lh", "node": ".a", "phase":0},
+  { "name": "0.1", "wave": "lh", "node": ".b", "phase":-0.1},
+  { "name": "0.2", "wave": "lh", "node": ".c", "phase":-0.2},
+  { "name": "0.3", "wave": "lh", "node": ".d", "phase":-0.3},
+  { "name": "0.4", "wave": "lh", "node": ".e", "phase":-0.4},
+  { "name": "0.5", "wave": "lh", "node": ".f", "phase":-0.5},
+  { "name": "0.6", "wave": "lh", "node": ".g", "phase":-0.6},
+  { "name": "0.7", "wave": "lh", "node": ".h", "phase":-0.7},
+  { "name": "0.8", "wave": "lh", "node": ".i", "phase":-0.8},
+  { "name": "0.9", "wave": "lh", "node": ".j", "phase":-0.9},
+  { "name": "1",   "wave": "lh", "node": ".k", "phase":-1}
+  ],
+  "edge": [
+    "a-b",
+    "b-c",
+    "c-d",
+    "d-e",
+    "e-f",
+    "f-g",
+    "g-h",
+    "h-i",
+    "i-j",
+    "j-k"
+  ]
+}
