@@ -1,5 +1,7 @@
 import os
 import subprocess
+import sys
+
 import wavedrom
 import pytest
 from diff import main as diff
@@ -33,6 +35,7 @@ def wavedromdir(tmpdir_factory):
         return wavedromdir
 
 
+@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_upstream(tmpdir,wavedromdir,file):
     f_in = "test/files/{}.json".format(file)
     f_out = "{}/{}.svg".format(tmpdir, file)
