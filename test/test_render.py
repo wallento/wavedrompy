@@ -11,8 +11,9 @@ files_subcycle = ["sub_cycle", "sub_cycle_gaps"]
 files_assign = ["assign_"+n for n in ["74ls688", "binary2gray", "gray2binary", "iec60617", "xor"]]
 files_bitfield = ["bitfield_{}".format(i) for i in range(1)]
 files_tutorial = ["tutorial_{}".format(i) for i in range(13)] + ["tutorial_{}n".format(i) for i in range(2)]
+files_issues = ["issue_{}".format(i) for i in range(1)]
 
-files = files_basic + files_tutorial
+files = files_basic + files_tutorial + files_issues
 
 
 def pytest_generate_tests(metafunc):
