@@ -858,10 +858,9 @@ class WaveDrom(SVGBase):
                     pos += 2 * self.lane.period
                 if next == "|":
                     if subCycle:
-                        dx = float(self.lane.xs) * pos * float(self.lane.hscale) - float(self.lane.phase)
+                        dx = float(self.lane.xs) * (pos * float(self.lane.hscale) - float(self.lane.phase))
                     else:
-                        dx = float(self.lane.xs) * (pos - self.lane.period) * float(self.lane.hscale) - float(
-                            self.lane.phase)
+                        dx = float(self.lane.xs) * ((pos - self.lane.period) * float(self.lane.hscale) - float(self.lane.phase))
                     b = self.container.use(href="#gap")
                     b.translate(dx)
                     g.add(b)
