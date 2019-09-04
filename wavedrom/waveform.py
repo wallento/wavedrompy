@@ -646,9 +646,9 @@ class WaveDrom(SVGBase):
             if "tick" in source["head"] or "tock" in source["head"]:
                 self.lane.yh0 = 20
             if "tick" in source["head"]:
-                source["head"]["tick "] += self.lane.xmin_cfg/2
+                source["head"]["tick"] += self.lane.xmin_cfg/2
             if "tock" in source["head"]:
-                source["head"]["tock "] += self.lane.xmin_cfg/2
+                source["head"]["tock"] += self.lane.xmin_cfg/2
             if source.get("head").get("text"):
                 self.lane.yh1 = 46
                 self.lane.head["text"] = source["head"]["text"]
@@ -660,9 +660,9 @@ class WaveDrom(SVGBase):
             if "tick" in source["foot"] or "tock" in source["foot"]:
                 self.lane.yf0 = 20
             if "tick" in source["foot"]:
-                source["foot"]["tick "] += self.lane.xmin_cfg/2
+                source["foot"]["tick"] += self.lane.xmin_cfg/2
             if "tock" in source["foot"]:
-                source["foot"]["tock "] += self.lane.xmin_cfg/2
+                source["foot"]["tock"] += self.lane.xmin_cfg/2
             if source.get("foot").get("text"):
                 self.lane.yf1 = 46
                 self.lane.foot["text"] = source["foot"]["text"]
