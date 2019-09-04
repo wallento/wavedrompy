@@ -312,8 +312,8 @@ class WaveDrom(SVGBase):
 
         if isinstance(val, string_types):
             val = val.split()
-        elif type(val) is int:
-            offset = val
+        elif isinstance(val, (int, float, bool)):
+            offset = int(val)
             val = []
             for i in range(length):
                 val.append(i + offset)
