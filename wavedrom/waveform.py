@@ -629,12 +629,26 @@ class WaveDrom(SVGBase):
                     hscale = 100
                 self.lane.hscale = hscale
 
+        self.lane.xmin_cfg = 0
+        self.lane.xmax_cfg = sys.maxsize
+        if source and "config" in source and "hbounds" in source["config"]:
+            if len(source["config"]["hbounds"]) == 2:
+                source["config"]["hbounds"][0] = math.floor(source["config"]["hbounds"][0])
+                source["config"]["hbounds"][1] = math.ceil(source["config"]["hbounds"][0])
+                if source["config"]["hbounds"][0] < source["config"]["hbounds"][1]:
+                    self.lane.xmin_cfg = 2 * source["config"]["hbounds"][0]
+                    self.lane.xmax_cfg = 2 * source["config"]["hbounds"][1]
+
         self.lane.yh0 = 0
         self.lane.yh1 = 0
         if source and source.get("head"):
             self.lane.head = source["head"]
             if "tick" in source["head"] or "tock" in source["head"]:
                 self.lane.yh0 = 20
+            if "tick" in source["head"]:
+                source["head"]["tick "] += self.lane.xmin_cfg/2
+            if "tock" in source["head"]:
+                source["head"]["tock "] += self.lane.xmin_cfg/2
             if source.get("head").get("text"):
                 self.lane.yh1 = 46
                 self.lane.head["text"] = source["head"]["text"]
@@ -645,6 +659,10 @@ class WaveDrom(SVGBase):
             self.lane.foot = source["foot"]
             if "tick" in source["foot"] or "tock" in source["foot"]:
                 self.lane.yf0 = 20
+            if "tick" in source["foot"]:
+                source["foot"]["tick "] += self.lane.xmin_cfg/2
+            if "tock" in source["foot"]:
+                source["foot"]["tock "] += self.lane.xmin_cfg/2
             if source.get("foot").get("text"):
                 self.lane.yf1 = 46
                 self.lane.foot["text"] = source["foot"]["text"]
@@ -854,7 +872,7 @@ class WaveDrom(SVGBase):
 
             for idx, val in enumerate(source):
                 self.lane.period = val.get("period", 1)
-                self.lane.phase = int(val.get("phase", 0) * 2)
+                self.lane.phase = int(val.get("phase", 0) * 2) + self.lane.xmin_cfg
 
                 dy = self.lane.y0 + idx * self.lane.yo
                 g = self.container.g(id="wavegap_{i}_{index}".format(i=idx, index=index))
