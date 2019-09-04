@@ -1,17 +1,19 @@
 import os
 import subprocess
 import sys
+from glob import glob
+from os.path import splitext, basename
 
 import wavedrom
 import pytest
 from diff import main as diff
 
-files_basic = ["signal0"]
-files_subcycle = ["sub_cycle", "sub_cycle_gaps"]
-files_assign = ["assign_"+n for n in ["74ls688", "binary2gray", "gray2binary", "iec60617", "xor"]]
-files_bitfield = ["bitfield_{}".format(i) for i in range(1)]
-files_tutorial = ["tutorial_{}".format(i) for i in range(13)] + ["tutorial_{}n".format(i) for i in range(2)]
-files_issues = ["issue_"+n for n in ["7", "11", "10", "13"]]
+files_basic = glob("test/files/signal_*.json")
+files_subcycle = glob("test/files/subcycle_*.json")
+files_assign = glob("test/files/assign_*.json")
+files_bitfield = glob("test/files/bitfield_*.json")
+files_tutorial = glob("test/files/tutorial_*.json")
+files_issues = glob("test/files/issue_*.json")
 
 files = files_basic + files_tutorial + files_issues
 
@@ -21,7 +23,7 @@ def pytest_generate_tests(metafunc):
 
 
 def test_render(file):
-    jinput = open("test/files/{}.json".format(file)).read()
+    jinput = open(file).read()
     wavedrom.render(jinput)
 
 
@@ -38,12 +40,12 @@ def wavedromdir(tmpdir_factory):
 
 @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
 def test_upstream(tmpdir,wavedromdir,file):
-    f_in = "test/files/{}.json".format(file)
-    f_out = "{}/{}.svg".format(tmpdir, file)
-    f_out_py = "{}/{}_py.svg".format(tmpdir, file)
+    base = splitext(basename(file))[0]
+    f_out = "{}/{}.svg".format(tmpdir, base)
+    f_out_py = "{}/{}_py.svg".format(tmpdir, base)
 
-    subprocess.check_call("{}/bin/cli.js -i {} > {}".format(wavedromdir, f_in, f_out), shell=True)
-    wavedrom.render_file(f_in, f_out_py, strict_js_features=True)
+    subprocess.check_call("{}/bin/cli.js -i {} > {}".format(wavedromdir, file, f_out), shell=True)
+    wavedrom.render_file(file, f_out_py, strict_js_features=True)
 
     unknown = diff(f_out, f_out_py)
 
