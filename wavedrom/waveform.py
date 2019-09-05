@@ -151,6 +151,8 @@ class WaveDrom(SVGBase):
             Top = This
             This = Stack.popleft()
             repeat = 0
+            if This == '|':
+                This = 'x'
             if This == '<':
                 subCycle = True
                 This = Top
