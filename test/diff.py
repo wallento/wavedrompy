@@ -82,6 +82,10 @@ def main(f_out, f_out_py):
             node = target.makeelement(action.tag)
             target.insert(action.position, node)
             action = action._replace(target=etree.tostring(orig_tree.xpath(action.target)[0]))
+        elif isinstance(action, xmldiff.actions.DeleteNode):
+            node = orig_tree.xpath(action.node)[0]
+            node.getparent().remove(node)
+            action = action._replace(node=etree.tostring(node))
 
         unknown.append(action)
     return unknown
