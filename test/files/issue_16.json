@@ -1,0 +1,36 @@
+{
+    "signal": [
+        {
+            "wave": "|nh....nh.nhn.xnhnh..|."
+        },
+        {
+            "wave": "x=.....=..=..x|=.=...=.",
+            "data": [
+                "Calib.",
+                "Stat./Comm.",
+                "N data nibbles",
+                "CRC",
+                "Pause",
+                "Calib."
+            ]
+        },
+        {
+            "node": "...................1.2."
+        }
+    ],
+    "edge": [
+        "1<->2 Interrupt"
+    ],
+    "head": {
+        "text": [
+            "tspan",
+            [
+                "tspan",
+                {
+                    "font-weight": "bold"
+                },
+                "SENT message signal timing diagram"
+            ]
+        ]
+    }
+}

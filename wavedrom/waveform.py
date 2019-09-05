@@ -613,7 +613,7 @@ class WaveDrom(SVGBase):
 
 
             for k in Events:
-                if k.islower():
+                if k.islower() or k.isdigit():
                     if int(Events[k].x) > 0:
                         gg.add(self.render_label(AttrDict({"x": Events[k].x, "y": Events[k].y}), k))
 
