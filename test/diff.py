@@ -6,6 +6,10 @@ import xmldiff.main
 from attrdict import AttrDict
 from lxml import etree
 
+from PIL import Image, ImageChops
+import cairosvg
+import io
+
 UpdateAttribx = namedtuple("UpdateAttribx", 'node name value old')
 MoveNodex = namedtuple("MoveNodex", 'node target position nodex targetx')
 
@@ -88,3 +92,18 @@ def main(f_out, f_out_py):
 
         unknown.append(action)
     return unknown
+
+def diff_raster(f_out_js, f_out_py):
+    with open(f_out_js, encoding="utf-8") as fileObj_svg_js:
+        svg_js = fileObj_svg_js.read()
+
+    with open(f_out_py, encoding="utf-8") as fileObj_svg_py:
+        svg_py = fileObj_svg_py.read()
+
+    png_js = cairosvg.svg2png(svg_js)
+    png_py = cairosvg.svg2png(svg_py)
+
+    image_js = Image.open(io.BytesIO(png_js))
+    image_py = Image.open(io.BytesIO(png_py))
+
+    return ImageChops.difference(image_js, image_py)
