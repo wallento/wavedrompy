@@ -5,6 +5,8 @@ https://github.com/pypa/sampleproject
 """
 
 # Always prefer setuptools over distutils
+import sys
+
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -142,7 +144,12 @@ setup(
     # projects.
     extras_require={  # Optional
         # "dev": ["check-manifest"],
-        "test": ["xmldiff"],
+        "test": [
+            "xmldiff",
+            #Per release notes, Python 2 support dropped at version 2.0.0
+            "cairosvg==1.0.22" if sys.version_info < (3, ) else "cairosvg",
+            "pillow"
+        ],
     },
 
     setup_requires=[

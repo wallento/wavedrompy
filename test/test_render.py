@@ -6,6 +6,7 @@ from os.path import splitext, basename
 
 import wavedrom
 import pytest
+from diff import diff_raster
 from diff import main as diff
 
 files_basic = glob("test/files/signal_*.json")
@@ -54,3 +55,8 @@ def test_upstream(tmpdir,wavedromdir,file):
         msg += "js file: {}\npy file: {}\n".format(f_out, f_out_py)
         msg += "\n".join([str(action) for action in unknown])
         pytest.fail(msg)
+
+    img = diff_raster(f_out, f_out_py)
+
+    if img.getbbox() is not None:
+        pytest.fail("Raster image comparison failed for " + file)
