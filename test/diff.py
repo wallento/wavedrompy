@@ -7,6 +7,7 @@ from attrdict import AttrDict
 from lxml import etree
 
 UpdateAttribx = namedtuple("UpdateAttribx", 'node name value old')
+MoveNodex = namedtuple("MoveNodex", 'node target position nodex targetx')
 
 
 def main(f_out, f_out_py):
@@ -51,19 +52,17 @@ def main(f_out, f_out_py):
                 # svgwrite adds more info to the svg element
                 continue
         elif isinstance(action, xmldiff.actions.MoveNode):
-            frm = orig_tree.xpath(action.node)[0].getparent()
-            target = orig_tree.xpath(action.target)[0]
-            okay = False
-            if frm == target:
-                # As long as we move in the same node everything is fine
-                okay = True
-            # But we need to patch anyways, to avoid later errors
             node = orig_tree.xpath(action.node)[0]
             node.getparent().remove(node)
             target = orig_tree.xpath(action.target)[0]
             target.insert(action.position, node)
-            if okay:
+            if node.tag.endswith("}style"):
+                # This is okay
                 continue
+            action_dict = action._asdict()
+            action_dict["nodex"] = etree.tostring(node)
+            action_dict["targetx"] = etree.tostring(target)
+            action = MoveNodex(**action_dict)
         elif isinstance(action, xmldiff.actions.UpdateTextIn):
             node = orig_tree.xpath(action.node)[0]
             if action.text is None:
