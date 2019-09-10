@@ -259,10 +259,11 @@ class WaveDrom(SVGBase):
 
         return sum([(chars[ord(c)] if ord(c) <= len(chars) else 114) for c in string])*size/100
 
-    def render_wave_lane(self, root=[], content="", index=0):
+    def render_wave_lane(self, content="", index=0):
         xmax = 0
         xgmax = 0
         glengths = []
+        groups = []
 
         for j, val in enumerate(content):
             name = val[0][0].strip()
@@ -289,10 +290,10 @@ class WaveDrom(SVGBase):
                     xmax = len(val[1])
 
                 g.add(gg)
-                root.add(g)
+                groups.append(g)
         self.lane.xmax = xmax
         self.lane.xg = xgmax + 20
-        return glengths
+        return (glengths, groups)
 
     def captext(self, g, cxt, anchor, y):
         if cxt.get(anchor) and cxt[anchor].get("text"):
@@ -356,7 +357,7 @@ class WaveDrom(SVGBase):
             tmark["xml:space"] = "preserve"
             g.add(tmark)
 
-    def render_marks(self, root=[], content="", index=0):
+    def render_marks(self, content="", index=0):
         def get_elem(e):
             if len(e) == 3:
                 ret = self.element[e[0]](e[2])
@@ -373,7 +374,6 @@ class WaveDrom(SVGBase):
         gy = len(content) * int(self.lane.yo)
 
         g = self.container.g(id="gmarks_{}".format(index))
-        root.add(g)
 
         for i in range(marks + 1):
             gg = self.element.path(id="gmark_{i}_{index}".format(i=i, index=index),
@@ -387,6 +387,8 @@ class WaveDrom(SVGBase):
         self.ticktock(g, self.lane, "head", "tock", mmstep / 2, mmstep,      -5, marks)
         self.ticktock(g, self.lane, "foot", "tick",          0, mmstep, gy + 15, marks + 1)
         self.ticktock(g, self.lane, "foot", "tock", mmstep / 2, mmstep, gy + 15, marks)
+
+        return g
 
     def render_labels(self, root, source, index):
         if source:
@@ -563,7 +565,7 @@ class WaveDrom(SVGBase):
         g.add(label)
         return g
 
-    def render_arcs(self, root, source, index, top):
+    def render_arcs(self, source, index, top):
         Edge = AttrDict({"words": [], "frm": 0, "shape": "", "to": 0, "label": ""})
         Events = AttrDict({})
 
@@ -617,7 +619,7 @@ class WaveDrom(SVGBase):
                     if int(Events[k].x) > 0:
                         gg.add(self.render_label(AttrDict({"x": Events[k].x, "y": Events[k].y}), k))
 
-            root.add(gg)
+            return gg
 
     def parse_config(self, source={}):
         self.lane.hscale = 1
@@ -789,14 +791,21 @@ class WaveDrom(SVGBase):
             ret = AttrDict({"x": 0, "y": 0, "xmax": 0, "width": [], "lanes": [], "groups": []})
             self.rec(source["signal"], ret)  # parse lanes
             content = self.parse_wave_lanes(ret.lanes)
-            glengths = self.render_wave_lane(lanes, content, index)
+            (glengths, lanegroups) = self.render_wave_lane(content, index)
             for i, val in enumerate(glengths):
                 xmax = max(xmax, (val + ret.width[i]))
-            self.render_marks(lanes, content, index)
-            self.render_gaps(lanes, ret.lanes, index)
+            marks = self.render_marks(content, index)
+            gaps = self.render_gaps(ret.lanes, index)
             if not strict_js_features:
                 self.render_labels(lanes, ret.lanes, index)
-            self.render_arcs(lanes, ret.lanes, index, source)
+            arcs = self.render_arcs(ret.lanes, index, source)
+
+            # Render
+            lanes.add(marks)
+            [lanes.add(l) for l in lanegroups]
+            lanes.add(arcs)
+            lanes.add(gaps)
+
             self.render_groups(groups, ret.groups, index)
             self.lane.xg = int(math.ceil(float(xmax - self.lane.tgo) / float(self.lane.xs))) * self.lane.xs
             width = self.lane.xg + self.lane.xs * (self.lane.xmax + 1)
@@ -867,7 +876,7 @@ class WaveDrom(SVGBase):
                     b.translate(dx)
                     g.add(b)
 
-    def render_gaps(self, root, source, index):
+    def render_gaps(self, source, index):
         if source:
             gg = self.container.g(id="wavegaps_{index}".format(index=index))
 
@@ -884,7 +893,7 @@ class WaveDrom(SVGBase):
 
                 gg.add(g)
 
-            root.add(gg)
+            return gg
 
     def convert_to_svg(self, root):
         svg_output = ""
