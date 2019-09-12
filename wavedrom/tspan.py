@@ -1,3 +1,6 @@
+# Copyright wavedrompy contributors.
+# SPDX-License-Identifier: MIT
+
 import sys
 
 import svgwrite
