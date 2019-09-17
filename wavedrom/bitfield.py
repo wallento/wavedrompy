@@ -66,6 +66,13 @@ class BitField(SVGBase):
                 res.append(self.get_text(val, xi, y))
             return res
         else:
+            if '\n' in attr:
+                names = attr.split('\n')
+                count = len(names)
+                return [
+                    self.get_text(name, x, y + (-(count - 1) / 2 + i) * self.opt.fontsize)
+                    for (i, name) in enumerate(names)
+                    ]
             return [self.get_text(attr, x, y)]
 
     def get_attrs(self, e, step, lsbm, msbm):
