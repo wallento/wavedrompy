@@ -45,7 +45,7 @@ def test_upstream(tmpdir,wavedromdir,file):
     f_out = "{}/{}.svg".format(tmpdir, base)
     f_out_py = "{}/{}_py.svg".format(tmpdir, base)
 
-    subprocess.check_call("{}/bin/cli.js -i {} > {}".format(wavedromdir, file, f_out), shell=True)
+    subprocess.check_call("node {}/bin/cli.js -i {} > {}".format(wavedromdir, file, f_out), shell=True)
     wavedrom.render_file(file, f_out_py, strict_js_features=True)
 
     unknown = diff(f_out, f_out_py)
