@@ -147,7 +147,7 @@ setup(
         "test": [
             "xmldiff",
             #Per release notes, Python 2 support dropped at version 2.0.0
-            "cairosvg==1.0.22" if sys.version_info < (3, ) else "cairosvg",
+            "cairosvg<2" if sys.version_info.major < 3 else "cairosvg",
             "pillow"
         ],
     },
