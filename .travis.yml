@@ -5,12 +5,10 @@ python:
   - "3.6"
 
 before_install:
-  - sudo apt-get install -y librsvg2-bin npm
+  - sudo apt-get install -y npm
 
 install:
-  - pip install .[test]
+  - pip install tox-travis
 
 script:
-  - pytest -v
-
-
+  - tox
