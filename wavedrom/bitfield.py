@@ -226,7 +226,7 @@ class BitField(SVGBase):
 
     def renderJson(self, source):
         opt = Options()
-        if source.get("options"):
-            opt = Options(**source['options'])
+        if source.get("config"):
+            opt = Options(**source['config'])
         if source.get("reg"):
             return self.render(source['reg'], opt)
