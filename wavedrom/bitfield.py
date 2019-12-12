@@ -12,11 +12,11 @@ from .base import SVGBase
 from .tspan import TspanParser
 
 class Options:
-    def __init__(self, vspace=80, hspace=640, lanes=2, bits=32, fontsize=14, bigendian=False, fontfamily='sans-serif',
+    def __init__(self, vspace=80, hspace=800, lanes=1, bits=32, fontsize=14, bigendian=False, fontfamily='sans-serif',
                  fontweight='normal'):
         self.vspace = vspace if vspace > 19 else 80
-        self.hspace = hspace if hspace > 39 else 640
-        self.lanes = lanes if lanes > 0 else 2
+        self.hspace = hspace if hspace > 39 else 800
+        self.lanes = lanes if lanes > 0 else 1
         self.bits = bits if bits > 4 else 32
         self.fontsize = fontsize if fontsize > 5 else 14
         self.bigendian = bigendian
@@ -201,9 +201,12 @@ class BitField(SVGBase):
 
         width = opt.hspace + 9
         height = (opt.vspace + self.extra_attr_space) * opt.lanes + 5
-        viewbox = { 'viewBox': "0 0 {} {}".format(width, height)}
 
-        template = svgwrite.Drawing(id="svgcontent", size=[width, height], **viewbox)
+        template = svgwrite.Drawing()
+        template["width"] = width
+        template["height"] = height
+        template["class"] = "WaveDrom"
+        template.viewbox(0, 0, width, height)
 
         lsb = 0
         self.mod = int(opt.bits / opt.lanes)
