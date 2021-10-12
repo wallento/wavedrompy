@@ -12,14 +12,14 @@ from .base import SVGBase
 from .tspan import TspanParser
 
 class Options:
-    def __init__(self, vspace=80, hspace=800, lanes=1, bits=32, fontsize=14, bigendian=False, fontfamily='sans-serif',
-                 fontweight='normal'):
+    def __init__(self, vspace=80, hspace=800, lanes=1, bits=32, hflip=False, vflip=False, fontsize=14, fontfamily='sans-serif', fontweight='normal'):
         self.vspace = vspace if vspace > 19 else 80
         self.hspace = hspace if hspace > 39 else 800
         self.lanes = lanes if lanes > 0 else 1
         self.bits = bits if bits > 4 else 32
+        self.hflip = hflip
+        self.vflip = vflip
         self.fontsize = fontsize if fontsize > 5 else 14
-        self.bigendian = bigendian
         self.fontfamily = fontfamily
         self.fontweight = fontweight
 
@@ -76,7 +76,10 @@ class BitField(SVGBase):
             return [self.get_text(attr, x, y)]
 
     def get_attrs(self, e, step, lsbm, msbm):
-        x = step * (self.mod - ((msbm + lsbm) / 2) - 1)
+        if self.opt.vflip:
+            x = step * (msbm + lsbm) / 2
+        else:
+            x = step * (self.mod - ((msbm + lsbm) / 2) - 1)
         attr = e['attr']
         bits = e['bits']
         attrs = [attr]
@@ -112,17 +115,30 @@ class BitField(SVGBase):
                 else:
                     continue
 
-            bits.add(self.get_text(lsb, x=[step*(self.mod-lsbm - 1)]))
+            if self.opt.vflip:
+                bits.add(self.get_text(lsb, x=[step*lsbm]))
+            else:
+                bits.add(self.get_text(lsb, x=[step*(self.mod-lsbm - 1)]))
             if lsbm != msbm:
-                bits.add(self.get_text(msb, x=[step * (self.mod - msbm - 1)]))
+                if self.opt.vflip:
+                    bits.add(self.get_text(msb, x=[step * msbm]))
+                else:
+                    bits.add(self.get_text(msb, x=[step * (self.mod - msbm - 1)]))
             if e.get('name'):
-                x = step*(self.mod-((msbm+lsbm)/2)-1)
+                if self.opt.vflip:
+                    x = step*(msbm+lsbm)/2
+                else:
+                    x = step*(self.mod-((msbm+lsbm)/2)-1)
                 for n in self.get_label(e['name'], x, 0):
                     names.add(n)
 
             if not e.get('name') or e.get('type'):
                 style = 'fill-opacity:0.1' + type_style(e.get('type', 0))
-                insert = [step * (self.mod - msbm - 1), 0]
+                if self.opt.vflip:
+                    insert_x = lsbm
+                else:
+                    insert_x = self.mod - msbm - 1
+                insert = [step * insert_x, 0]
                 size = [step * (msbm - lsbm + 1), self.opt.vspace/2]
                 blanks.add(self.element.rect(insert=insert, size=size, style=style))
             if e.get('attr') is not None:
@@ -150,11 +166,18 @@ class BitField(SVGBase):
         g = self.container.g(stroke='black', stroke_width=1, stroke_linecap='round', transform="translate(0,{})".format(vspace/4))
 
         g.add(self.hline(hspace));
-        g.add(self.vline(vspace / 2));
+        if self.opt.vflip:
+            g.add(self.vline(0));
+        else:
+            g.add(self.vline(vspace / 2));
         g.add(self.hline(hspace, 0, vspace / 2));
 
         i = self.index * mod
-        for j in range(mod, 0, -1):
+        if self.opt.vflip:
+            r = range(0, mod + 1)
+        else:
+            r = range(mod, 0, -1)
+        for j in r:
             if j == mod or any([(e["lsb"] == i) for e in desc]):
                 g.add(self.vline((vspace / 2), j * (hspace / mod)));
             else:
@@ -166,7 +189,11 @@ class BitField(SVGBase):
 
     def lane(self, desc):
         x = 4.5
-        y = (self.opt.lanes-self.index-1)  * self.opt.vspace + 0.5
+        if self.opt.hflip:
+            i = self.index
+        else:
+            i = self.opt.lanes-self.index-1
+        y = i * self.opt.vspace + 0.5
         g = self.container.g(transform = "translate({},{})".format(x, y),
                              text_anchor = "middle",
                              font_size = self.opt.fontsize,
