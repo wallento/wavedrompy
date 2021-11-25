@@ -49,7 +49,8 @@ class WaveDrom(SVGBase):
             "Pclk": "111", "Nclk": "000",
             "pclk": "111", "nclk": "000",
             "0": "000", "1": "111", "x": "xxx", "d": "ddd", "u": "uuu", "z": "zzz",
-            "2": "vvv-2", "3": "vvv-3", "4": "vvv-4", "5": "vvv-5"}
+            "2": "vvv-2", "3": "vvv-3", "4": "vvv-4", "5": "vvv-5", "6": "vvv-6",
+            "7": "vvv-7", "8": "vvv-8", "9": "vvv-9"}
 
         if stretch == -0.5:
             # This is the only valid non-integer value, it essentially means halfing down. Further subsampling
@@ -78,12 +79,14 @@ class WaveDrom(SVGBase):
         sharpedge.update(sharpedge_sig)
 
         # level: logical levels of symbols at wave
-        level = {"=": "v", "2": "v", "3": "v", "4": "v", "5": "v", "h": "1", "H": "1", "l": "0", "L": "0"}
+        level = {"=": "v", "2": "v", "3": "v", "4": "v", "5": "v", "6": "v",
+                 "7": "v", "8": "v", "9": "v", "h": "1", "H": "1", "l": "0", "L": "0"}
         # translevel: Those are the levels at the end of a cycle (special for clocks)
         translevel = level.copy()
         translevel.update({"p": "0", "P": "0", "n": "1", "N": "1"})
         # data: Modifiers of wavebricks that add data
-        data = {"=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5"}
+        data = {"=": "-2", "2": "-2", "3": "-3", "4": "-4", "5": "-5", "6":
+                "-6", "7": "-7", "8": "-8", "9": "-9"}
         # clkinvert: The inverse brick to clock symbols
         clkinvert = {"p": "nclk", "n": "pclk", "P": "nclk", "N": "pclk"}
         # xclude: Those are actually identical levels, no transition
@@ -187,7 +190,7 @@ class WaveDrom(SVGBase):
         gcount = 0
         ret = []
         for idx, val in enumerate(lanetext):
-            if val in ["vvv-2", "vvv-3", "vvv-4", "vvv-5"]:
+            if val in ["vvv-2", "vvv-3", "vvv-4", "vvv-5", "vvv-6", "vvv-7", "vvv-8", "vvv-9"]:
                 lcount += 1
             else:
                 if lcount != 0:
@@ -920,4 +923,3 @@ class WaveDrom(SVGBase):
     renderWaveForm = render_waveform
     renderGroups = render_groups
     renderGaps = render_gaps
-
