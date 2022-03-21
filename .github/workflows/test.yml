@@ -1,0 +1,26 @@
+name: Run tests
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10" ]
+    name: Test on Python ${{ matrix.python-version }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install npm
+      run: sudo apt-get install -y npm
+    - name: Install dependency
+      run: pip install pytest
+    - name: Install package
+      run: pip install .[test]
+    - name: Test
+      run: pytest
