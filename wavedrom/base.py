@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import svgwrite
-from attrdict import AttrDict
-
+from .attrdict import AttrDict
 
 class SVGBase(object):
     container = AttrDict({

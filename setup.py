@@ -22,7 +22,6 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # Fields marked as "Optional" may be commented out.
 
 requires = ["svgwrite",
-            "attrdict",
             "six" # 2 and 3 compatibility
             ]
 setup(

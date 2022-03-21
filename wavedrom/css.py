@@ -4,8 +4,8 @@
 # Translated to Python from original file:
 # https://github.com/drom/wavedrom/blob/master/src/WaveDrom.js
 
-import attrdict
-css = attrdict.AttrDict({})
+from .attrdict import AttrDict
+css = AttrDict({})
 css.default = """
 text{font-size:11pt;
      font-style:normal;

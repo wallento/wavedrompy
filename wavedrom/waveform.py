@@ -10,7 +10,7 @@ import math
 import re
 from itertools import chain
 import svgwrite
-from attrdict import AttrDict
+from .attrdict import AttrDict
 from collections import deque
 
 from six import string_types

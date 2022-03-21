@@ -3,7 +3,6 @@ from collections import namedtuple
 
 import xmldiff
 import xmldiff.main
-from attrdict import AttrDict
 from lxml import etree
 
 from PIL import Image, ImageChops

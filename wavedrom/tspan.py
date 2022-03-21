@@ -4,10 +4,10 @@
 import sys
 
 import svgwrite
-from attrdict import AttrDict
 from six import string_types
 from svgwrite.base import BaseElement
 from svgwrite.etree import etree
+from .attrdict import AttrDict
 
 if sys.version_info < (3, 0):
     from HTMLParser import HTMLParser
