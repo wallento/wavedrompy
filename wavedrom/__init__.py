@@ -30,7 +30,9 @@ def render_write(source, output, strict_js_features = False):
 
 
 def render_file(source, output, strict_js_features = False):
-    render_write(open(source, "r"), open(output, "w"), strict_js_features=strict_js_features)
+    out = open(output, "w")
+    render_write(open(source, "r"), out, strict_js_features=strict_js_features)
+    out.close()
 
 
 def main():
