@@ -807,8 +807,8 @@ class WaveDrom(SVGBase):
 
     def render_groups(self, root=[], groups=[], index=0):
         for i, val in enumerate(groups):
-            dx = groups[i].x + 0.5
-            dy = groups[i].y * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
+            dx = groups[i]["x"] + 0.5
+            dy = groups[i]["y"] * self.lane.yo + 3.5 + self.lane.yh0 + self.lane.yh1
             h = int(groups[i]["height"] * self.lane.yo - 16)
             group = self.element.path(id="group_{i}_{index}".format(i=i, index=index),
                                       d="m {dx},{dy} c -3,0 -5,2 -5,5 l 0,{h} c 0,3 2,5 5,5".format(dx=dx, dy=dy, h=h),
