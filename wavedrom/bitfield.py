@@ -23,11 +23,11 @@ class Options:
         self.fontfamily = fontfamily
         self.fontweight = fontweight
 
-colors = {2: 0, 3: 80, 4: 170, 5: 45, 6: 126, 7: 215}
+colors = {2: 'FF0000', 3: 'AAFF00', 4: '00FFD5', 5: 'FFBF00', 6: '00FF1A', 7: '006AFF'}
 
 def type_style(t):
     if t in colors.keys():
-        return ";fill:hsl({},100%,50%)".format(colors[t])
+        return ";fill:#{}".format(colors[t])
     else:
         return ''
 
