@@ -4,7 +4,7 @@
 
 import argparse
 import json
-import os
+import yaml
 import sys
 
 from .waveform import WaveDrom
@@ -12,9 +12,18 @@ from .assign import Assign
 from .version import version
 from .bitfield import BitField
 
+import json
+
+
+def fixQuotes(inputString):
+    # fix double quotes in the input file. opening with yaml and dumping with json fix the issues.
+    yamlCode = yaml.load(inputString, Loader=yaml.FullLoader)
+    fixedString = json.dumps(yamlCode, indent=4)
+    return fixedString
+
 
 def render(source="", output=[], strict_js_features = False):
-    source = json.loads(source)
+    source = json.loads(fixQuotes(source))
     if source.get("signal"):
         return WaveDrom().render_waveform(0, source, output, strict_js_features)
     elif source.get("assign"):
