@@ -1,0 +1,6 @@
+{signal: [
+    {name: 'e', wave: '0.30.30..', data: ['τ', 'τ+1']},
+    {name: 'x', wave: 'x.=x.=x..', data: ['x₀', 'x₁']},
+    {name: 'δₑx', wave: 'x..=..=..', data: ['x₀', 'x₁']},
+    {name: 'δe', wave: '0..30.30.', data: ['τ', 'τ+1']},
+  ]}
