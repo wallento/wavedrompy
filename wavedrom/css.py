@@ -5,6 +5,7 @@
 # https://github.com/drom/wavedrom/blob/master/src/WaveDrom.js
 
 from .attrdict import AttrDict
+
 css = AttrDict({})
 css.default = """
 text{font-size:11pt;
@@ -287,7 +288,7 @@ text{font-size:11pt;
     enable-background:accumulate}
 """
 
-css.lowkey="""
+css.lowkey = """
 text{font-size:11pt;
     font-style:normal;
     font-variant:normal;
