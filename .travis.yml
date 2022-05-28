@@ -1,14 +1,37 @@
+# Applied from https://github.com/conda/conda/blob/master/docs/source/user-guide/tasks/use-conda-with-travis-ci.rst
+
 language: python
+
+# We don't actually use the Travis Python, but this keeps it organized.
+# But tox runs in Travis Python, so it has to be compatible with tox and its plugins.
+matrix:
+  include:
+  - name: "Python: 2.7"
+    python: 3.7
+    env: TOXENV=py27
 python:
-  - "2.7"
   - "3.5"
   - "3.6"
   - "3.7"
 
-before_install:
-  - sudo apt-get install -y npm
-
 install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+
+  # Replace dep1 dep2 ... with your dependencies
+  # wavedrompy will use tox-conda, so all dependencies will be handled in tox.ini
+  - conda create -q -c conda-forge -n test-environment python=$TRAVIS_PYTHON_VERSION tox-conda
+  - conda activate test-environment
+
   - pip install tox-travis
 
 script:
