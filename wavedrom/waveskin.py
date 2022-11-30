@@ -1690,6 +1690,22 @@ WaveSkin["default"] = [
             },
             ["path", {"d": "M0 -4 -11 0 0 4z"}],
         ],
+        [
+            "marker",
+            {
+                "id": "tee",
+                "style": "fill:#0041c4",
+                "markerHeight": "6",
+                "markerWidth": "1",
+                "markerUnits": "strokeWidth",
+                "viewBox": "0 0 1 6",
+                "refX": "0",
+                "refY": "3",
+                "orient": "auto"
+            },
+            ["path", {"d": "M 0 0 L 0 6",
+                      "style": "stroke:#0041c4;stroke-width:2"}]
+        ],        
     ],
     ["g", {"id": "waves"}, ["g", {"id": "lanes"}], ["g", {"id": "groups"}]],
 ]
