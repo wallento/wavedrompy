@@ -1219,7 +1219,7 @@ class WaveDrom(SVGBase):
             {
                 "lx": lx,
                 "ly": ly,
-                "style": "fill:none;stroke:#00F;stroke-width:1",
+                "style": "marker-end:url(#tee);marker-start:url(#tee);fill:none;stroke:#00F;stroke-width:1",
                 "d": "M {fx},{fy} {tx},{ty}".format(
                     fx=frm.x, fy=frm.y, tx=to.x, ty=to.y
                 ),
