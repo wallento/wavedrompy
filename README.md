@@ -78,7 +78,7 @@ Finally, wavedrom can draw registers as bitfields:
       { "name": "Clear", "bits": 3 },
       { "bits": 8 }
       ]
-    ]}""")
+    }""")
     svg.saveas("demo3.svg")
 
     
